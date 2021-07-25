@@ -177,9 +177,16 @@ public class LocalFilesystemHarvester extends AbstractHarvester<HarvestResult, L
 
         AbstractMetadata metadata = new Metadata();
         metadata.setUuid(uuid);
-        String xmlUuid = metadataUtils.extractUUID(schema, md);
-        if (!uuid.equals(xmlUuid)) {
-            md = metadataUtils.setUUID(schema, uuid, md);
+        MetadataType isTemplate = MetadataType.lookup(params.recordType);
+        if (isTemplate == MetadataType.SUB_TEMPLATE || isTemplate == MetadataType.TEMPLATE_OF_SUB_TEMPLATE) {
+           // Set subtemplate uuid in @uuid at root, should we do this? Could cause validation errors! Who cares? It's 
+           // trivial in any case...
+           md.setAttribute("uuid", uuid);
+        } else {
+          String xmlUuid = metadataUtils.extractUUID(schema, md);
+          if (!uuid.equals(xmlUuid)) {
+              md = metadataUtils.setUUID(schema, uuid, md);
+          }
         }
         metadata.getDataInfo().
             setSchemaId(schema).
