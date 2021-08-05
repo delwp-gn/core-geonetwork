@@ -121,7 +121,7 @@
   <constraints>Constraints</constraints>
   <resourceConstraints>Constraints</resourceConstraints>
   <metadataConstraints>Metadata Constraints</metadataConstraints>
-  <projectContacts>Responsibility</projectContacts>
+  <projectContacts>Contacts</projectContacts>
   <resourceSpatial>Spatial</resourceSpatial>
   <resourceTemporal>Temporal</resourceTemporal>
   <distribution_name>Name</distribution_name>
