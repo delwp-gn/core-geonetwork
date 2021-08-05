@@ -93,7 +93,7 @@
     <facet name="resolution" indexKey="resolution" label="resolutions"/>
     <facet name="spatialRepresentationType" indexKey="cl_spatialRepresentationType"
            label="spatialRepresentationTypes"/>
-    <facet name="orgName" indexKey="orgName" label="orgNames" localized="true"/>
+    <facet name="orgName" indexKey="orgName" label="contact" localized="true"/>
     <facet name="orgNameTree" indexKey="orgNameTree" label="orgNamesTree"
            classifier="slashSplitClassifier"/>
     <facet name="metadataPOC" indexKey="metadataPOC" label="metadataPOCs"/>
@@ -152,18 +152,17 @@
     <!-- DELWP Addition -->
     <summaryType name="delwp" format="DIMENSION">
       <item facet="rasterType" max="40" translator="codelist:mcc:MD_ScopeCode"/>
-      <item facet="rasterAssemblyType" max="40" translator="codelist:delwp:MD_AssemblyCode"/>
-      <item facet="platformType" max="40" translator="codelist:delwp:MD_PlatformTypeCode"/>
-      <item facet="spatialRepresentationType"
-            translator="codelist:mcc:MD_SpatialRepresentationTypeCode"/>
-      <item facet="sensorType" max="40"/>
+      <item facet="topicCat" translator="codelist:gmd:MD_TopicCategoryCode" max="20"/>
+      <item facet="orgName" max="25"/>
+      <item facet="spatialRepresentationType" translator="codelist:mcc:MD_SpatialRepresentationTypeCode"/>
       <item facet="sdmCategory" max="40"/>
+      <item facet="format" max="15" sortBy="value" sortOrder="asc"/>
       <item facet="resClassification" max="40"/>
       <item facet="mdClassification" max="40"/>
-      <item facet="jurisdiction" max="40"/>
-      <item facet="category" max="99" sortBy="value"
-            translator="db:org.fao.geonet.repository.MetadataCategoryRepository:findOneByName"/>
-      <!--<item facet="classification" max="99" />-->
+      <item facet="status" translator="codelist:gmd:MD_ProgressCode"/>
+      <item facet="rasterAssemblyType" max="40" translator="codelist:delwp:MD_AssemblyCode"/>
+      <item facet="platformType" max="40" translator="codelist:delwp:MD_PlatformTypeCode"/>
+      <item facet="sensorType" max="40"/>
     </summaryType>
     <!-- END DELWP Addition -->
     <summaryType name="details" format="DIMENSION">
