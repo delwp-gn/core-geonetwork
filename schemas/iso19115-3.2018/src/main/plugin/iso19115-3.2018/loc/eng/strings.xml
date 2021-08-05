@@ -85,7 +85,6 @@
   <acquisitionInformation>Acquisition Info</acquisitionInformation>
   <anzlicId>ANZLIC Id</anzlicId>
   <alternateTitle>Resource Name</alternateTitle>
-  <associatedResources>Associated resources</associatedResources>
   <bboxesSection>Geographic coverage</bboxesSection>
   <citationProposal>Citation proposal</citationProposal>
   <citationProposal-help>This proposal was automatically generated, check if the metadata authors did not specified custom citation requirements.</citationProposal-help>
@@ -100,16 +99,13 @@
   <linkToPortal-help>Read here the full details and access to the data.</linkToPortal-help>
   <metadataInXML>XML</metadataInXML>
   <notEvaluated>Not evaluated</notEvaluated>
-  <overviews>Overviews</overviews>
   <pass>Pass</pass>
   <pointOfContact>Resource Contact</pointOfContact>
-  <providedBy>Provided by</providedBy>
   <qualityMeasures>Q. measures</qualityMeasures>
   <resourceIdentification>Resource Identification</resourceIdentification>
   <resourceQuality>Quality</resourceQuality>
 
   <source>Source</source>
-  <shareOnSocialSite>Share on social sites</shareOnSocialSite>
   <viewMode>Views</viewMode>
 
   <!-- new tabs in default mode -->
