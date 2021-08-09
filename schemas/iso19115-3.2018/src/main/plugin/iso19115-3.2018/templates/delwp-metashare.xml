@@ -124,16 +124,8 @@
             <gex:EX_TemporalExtent>
               <gex:extent>
                 <gml:TimePeriod gml:id="N10315">
-                  <gml:begin>
-                    <gml:TimeInstant gml:id="N1031B">
-                      <gml:timePosition />
-                    </gml:TimeInstant>
-                  </gml:begin>
-                  <gml:end>
-                    <gml:TimeInstant gml:id="N10326">
-                      <gml:timePosition />
-                    </gml:TimeInstant>
-                  </gml:end>
+                  <gml:beginPosition></gml:beginPosition>
+                  <gml:endPosition></gml:endPosition>
                 </gml:TimePeriod>
               </gex:extent>
             </gex:EX_TemporalExtent>
