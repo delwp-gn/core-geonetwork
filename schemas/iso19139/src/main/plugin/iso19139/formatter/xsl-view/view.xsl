@@ -198,7 +198,8 @@
 
       <xsl:choose>
         <xsl:when test=".//gmd:EX_BoundingPolygon">
-          <xsl:copy-of select="gn-fn-render:extent($metadataUuid)"/>
+          <!-- <xsl:copy-of select="gn-fn-render:extent($metadataUuid)"/> -->
+          <div>Cannot render bounding polygon: <xsl:copy-of select=".//gmd:EX_BoundingPolygon"/></div>
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates mode="render-field"
@@ -250,12 +251,14 @@
       </xsl:for-each>
     </div>
 
+    <!-- Who cares about JsonLD quite frankly! It's horrible....
     <xsl:if test="$withJsonLd = 'true'">
       <script type="application/ld+json">
         <xsl:apply-templates mode="getJsonLD"
                              select="$metadata"/>
       </script>
     </xsl:if>
+    -->
   </xsl:template>
 
 
@@ -565,9 +568,12 @@
 
   <xsl:template mode="render-field"
                 match="gmd:EX_BoundingPolygon/gmd:polygon">
+    <!--
     <xsl:copy-of select="gn-fn-render:extent($metadataUuid,
         count(ancestor::gmd:extent/preceding-sibling::gmd:extent/*/*[local-name() = 'geographicElement']/*) +
         count(../../preceding-sibling::gmd:geographicElement) + 1)"/>
+     -->
+    <div>Cannot render bounding polygon: <xsl:copy-of select="gmd:EX_BoundingPolygon/gmd:polygon"/></div>
     <br/>
     <br/>
   </xsl:template>
@@ -1163,16 +1169,20 @@
     <xsl:variable name="href" select="@src"/>
     <xsl:variable name="label" select="."/>
 
+    <!-- Christ knows what imageExtensionsRegex is meant to be so we'll assume it isn't present....
     <xsl:choose>
       <xsl:when test="matches($href, $imageExtensionsRegex, 'i')">
         <img src="{$href}" title="{$label}" alt="{$label}"/>
       </xsl:when>
       <xsl:otherwise>
+    -->
         <a href="{$href}"><xsl:comment select="name()"/>
           <xsl:value-of select="$label"/>
         </a>
+    <!--
       </xsl:otherwise>
     </xsl:choose>
+    -->
   </xsl:template>
 
   <!-- ... URL -->
