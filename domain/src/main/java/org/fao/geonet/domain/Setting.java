@@ -80,10 +80,13 @@ public class Setting extends GeonetEntity {
         return this;
     }
 
-    @Lob
-    @Column(name = "value", nullable = true)
-    @Type(type = "org.hibernate.type.TextType")
-    // this is a work around for postgres so postgres can correctly load clobs
+    @Column(name = "value", length = 2048, nullable = true)
+    // S Pigot - No need for a LOB as harvester settings have moved to a different table..... Advantage is that fetch time is
+    //           much shorter particularly if using a remote database over network - cuts down on round trips to read the 
+    //           settings table - then again, why is freakin hibernate trying to read the settings table repeatedly? Why not cache
+    //           the thing...
+    //@Lob
+    //@Type(type = "org.hibernate.type.TextType")
     public String getStoredValue() {
         return storedValue;
     }
