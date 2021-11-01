@@ -835,6 +835,8 @@
     "system/inspire/remotevalidation/url": "INSPIRE remote validation URL",
     "system/inspire/remotevalidation/url-placeholder": "https://inspire.ec.europa.eu/validator/",
     "system/inspire/remotevalidation/url-help": "To enable the remote validation.",
+    "system/inspire/remotevalidation/apikey": "API key",
+    "system/inspire/remotevalidation/apikey-help": "Users and organisations interested in receiving an API key will need to contact the Validator team by sending an e-mail to JRC-INSPIRE-SUPPORT AT ec.europa.eu and provide the following information: name of the organisation, responsible contact point and intended use of the API key.",
     "system/intranet": "Intranet",
     "system/intranet/network": "Network",
     "system/intranet/netmask": "Netmask",
@@ -1473,5 +1475,8 @@
     "ui-autoFitOnLayer-help":"If checked, the map will automatically zoom on data when adding a layer from a record. Otherwise, a message will be shown to let the user zoom on data manually.",
     "styleVariable-gnHeaderHeight":"Height",
     "styleVariable-gnSearchBackgroundColor": "Backgound color",
-    "confirmDeletecategory": "Are you sure you want to delete this category?"
+    "confirmDeletecategory": "Are you sure you want to delete this category?",
+    "ui-addWMSLayersToMap": "Add WMS layers from metadata to the map viewer",
+    "ui-addWMSLayersToMap-urlLayerParam": "URL parameter with the layer name",
+    "ui-addWMSLayersToMap-urlLayerParam-help": "If the WMS layer name is configured in the metadata resource url, configure the url parameter that contains the layer name."
 }

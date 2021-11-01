@@ -242,8 +242,9 @@ public class MetadataWorkflowApi {
         // --- get the list of content reviewers for this metadata record
         Set<Integer> ids = new HashSet<Integer>();
         ids.add(Integer.valueOf(metadata.getId()));
-        List<Pair<Integer, User>> reviewers = userRepository.findAllByGroupOwnerNameAndProfile(ids, Profile.Reviewer,
-                SortUtils.createSort(User_.name));
+        List<Pair<Integer, User>> reviewers = userRepository.findAllByGroupOwnerNameAndProfile(ids, Profile.Reviewer);
+        Collections.sort(reviewers, Comparator.comparing(s -> s.two().getName()));
+
         List<User> listOfReviewers = new ArrayList<>();
         for (Pair<Integer, User> reviewer : reviewers) {
             listOfReviewers.add(reviewer.two());
@@ -265,7 +266,7 @@ public class MetadataWorkflowApi {
                                      @ApiIgnore
                                      @ApiParam(hidden = true) HttpServletRequest request) throws Exception {
         ServiceContext context = ApiUtils.createServiceContext(request,
-            languageUtils.getIso3langCode(request.getLocales()));
+            languageUtils.iso3code(request.getLocales()));
 
         boolean isMdWorkflowEnable = settingManager.getValueAsBool(Settings.METADATA_WORKFLOW_ENABLE);
 
@@ -363,7 +364,7 @@ public class MetadataWorkflowApi {
     public void setStatus(@ApiParam(value = API_PARAM_RECORD_UUID, required = true) @PathVariable String metadataUuid,
             @ApiParam(value = "Metadata status", required = true) @RequestBody(required = true) MetadataStatusParameter status,
             HttpServletRequest request) throws Exception {
-      try (ServiceContext context = ApiUtils.createServiceContext(request, languageUtils.getIso3langCode(request.getLocales()))) {
+      try (ServiceContext context = ApiUtils.createServiceContext(request, languageUtils.iso3code(request.getLocales()))) {
         AbstractMetadata metadata = ApiUtils.canEditRecord(metadataUuid, context);
         boolean isMdWorkflowEnable = settingManager.getValueAsBool(Settings.METADATA_WORKFLOW_ENABLE);
 
@@ -496,9 +497,13 @@ public class MetadataWorkflowApi {
         HttpServletRequest request) throws Exception {
       try (ServiceContext context = ApiUtils.createServiceContext(request)) {
 
-        PageRequest pageRequest = null;
+        PageRequest pageRequest;
         if (sortOrder !=null) {
             Sort sortByStatusChangeDate = SortUtils.createSort(sortOrder, MetadataStatus_.changeDate).and(SortUtils.createSort(sortOrder, MetadataStatus_.id));
+            pageRequest = new PageRequest(from, size, sortByStatusChangeDate);
+        } else {
+            // Default sort order
+            Sort sortByStatusChangeDate = SortUtils.createSort(Sort.Direction.DESC, MetadataStatus_.changeDate).and(SortUtils.createSort(Sort.Direction.DESC, MetadataStatus_.id));
             pageRequest = new PageRequest(from, size, sortByStatusChangeDate);
         }
 

@@ -547,5 +547,7 @@
     "resClassification": "Resource Constraints",
     "mdClassification": "Metadata Constraints",
     "stakeholderType": "Contact Type",
-    "platformType": "Raster Platform Type" 
+    "platformType": "Raster Platform Type", 
+    "unselectChoiceNotAllowedTitle": "Unselect choices",
+    "unselectChoiceNotAllowed": "Some choices can't be removed: {{notAllowedChoices}}"
 }
