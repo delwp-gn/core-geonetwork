@@ -590,6 +590,11 @@
       <version>0.6.0</version>
     </dependency>
 
+    <dependency>
+        <groupId>com.github.isrsal</groupId>
+        <artifactId>spring-mvc-logger</artifactId>
+    </dependency>
+
     <!-- Add dependencies to built-in schema plugin having a custom bean to be loaded. -->
     <dependency>
       <groupId>org.geonetwork-opensource.schemas</groupId>

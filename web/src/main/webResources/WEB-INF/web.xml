@@ -513,4 +513,14 @@
     <param-name>spring.profiles.active</param-name>
     <param-value>${es.spring.profile}</param-value>
   </context-param>
+
+  <filter>
+    <filter-name>loggingFilter</filter-name>
+    <filter-class>com.github.isrsal.logging.LoggingFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>loggingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 </web-app>
