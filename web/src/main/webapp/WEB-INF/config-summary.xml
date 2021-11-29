@@ -127,6 +127,7 @@
     <facet name="resClassification" label="resClassification" indexKey="resClassification"/>
     <facet name="mdClassification" label="mdClassification" indexKey="mdClassification"/>
     <facet name="jurisdiction" label="jurisdiction" indexKey="jurisdiction"/>
+    <facet name="draft" indexKey="draft" label="draft"/>
     <!-- END DELWP Additions -->
     <!--
     Example configuration for hierarchical facet based on
@@ -152,17 +153,27 @@
     <!-- DELWP Addition -->
     <summaryType name="delwp" format="DIMENSION">
       <item facet="rasterType" max="40" translator="codelist:mcc:MD_ScopeCode"/>
-      <item facet="topicCat" translator="codelist:gmd:MD_TopicCategoryCode" max="20"/>
-      <item facet="orgName" max="25"/>
-      <item facet="spatialRepresentationType" translator="codelist:mcc:MD_SpatialRepresentationTypeCode"/>
-      <item facet="sdmCategory" max="40"/>
-      <item facet="format" max="15" sortBy="value" sortOrder="asc"/>
-      <item facet="resClassification" max="40"/>
-      <item facet="mdClassification" max="40"/>
-      <item facet="status" translator="codelist:gmd:MD_ProgressCode"/>
       <item facet="rasterAssemblyType" max="40" translator="codelist:delwp:MD_AssemblyCode"/>
       <item facet="platformType" max="40" translator="codelist:delwp:MD_PlatformTypeCode"/>
+      <item facet="topicCat" translator="codelist:gmd:MD_TopicCategoryCode" max="20"/>
+      <item facet="spatialRepresentationType" translator="codelist:mcc:MD_SpatialRepresentationTypeCode"/>
       <item facet="sensorType" max="40"/>
+      <item facet="sdmCategory" max="40"/>
+      <item facet="orgName" max="25"/>
+      <item facet="resClassification" max="40"/>
+      <item facet="mdClassification" max="40"/>
+      <item facet="jurisdiction" max="40"/>
+      <item facet="createDateYear" sortBy="value" sortOrder="desc" max="40"/>
+      <item facet="maintenanceAndUpdateFrequency"
+            translator="codelist:gmd:MD_MaintenanceFrequencyCode"/>
+      <item facet="category" max="99" sortBy="value"
+            translator="db:org.fao.geonet.repository.MetadataCategoryRepository:findOneByName"/>
+      <item facet="sourceCatalog"
+            translator="db:org.fao.geonet.repository.SourceRepository:findOneByUuid"/>
+      <item facet="format" max="15" sortBy="value" sortOrder="asc"/>
+      <item facet="status" translator="codelist:gmd:MD_ProgressCode"/>
+      <item facet="serviceType"/>
+      <item facet="draft"/>
     </summaryType>
     <!-- END DELWP Addition -->
     <summaryType name="details" format="DIMENSION">
