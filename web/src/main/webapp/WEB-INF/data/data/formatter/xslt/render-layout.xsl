@@ -25,8 +25,27 @@
   <xsl:template mode="getMetadataThumbnail" match="*"/>
   <xsl:template mode="getMetadataHeader" match="*"/>
   
-  <xsl:template mode="renderExport" match="*"/>
-  <!-- Those templates should be overriden in the schema plugin - end -->
+  <xsl:template mode="renderExport" match="*">
+        <!-- Can be overridden by templates in schema plugin -->
+        <!-- Render complete HTML page -->
+        <xsl:call-template name="render-html">
+          <xsl:with-param name="content">
+            <xsl:call-template name="render-record"/>
+          </xsl:with-param>
+          <xsl:with-param name="title">
+            <xsl:apply-templates mode="getMetadataTitle" select="$metadata"/>
+          </xsl:with-param>
+          <xsl:with-param name="description">
+            <xsl:apply-templates mode="getMetadataAbstract" select="$metadata"/>
+          </xsl:with-param>
+          <xsl:with-param name="type">
+            <xsl:apply-templates mode="getMetadataHierarchyLevel" select="$metadata"/>
+          </xsl:with-param>
+          <xsl:with-param name="thumbnail">
+            <xsl:apply-templates mode="getMetadataThumbnail" select="$metadata"/>
+          </xsl:with-param>
+        </xsl:call-template>
+  </xsl:template>
 
   <!-- Starting point -->
   <xsl:template match="/">
