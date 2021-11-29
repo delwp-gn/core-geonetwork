@@ -192,6 +192,18 @@ goog.require('gn_alert');
             // 'url' : '/formatters/xml?attachment=false',
             'url' : '/formatters/xml',
             'class': 'fa-file-code-o'
+          }, {
+            'label': 'SDM PDF',
+            'url' : '/formatters/sdm-pdf?output=pdf&language=${lang}',
+            'class': 'fa-file-pdf-o'
+          }, {
+            'label': 'SDM HTML',
+            'url' : '/formatters/sdm-html?output=html&language=${lang}',
+            'class': 'fa-file-text-o'
+          }, {
+            'label': 'CIP PDF',
+            'url' : '/formatters/cip-pdf?output=pdf&language=${lang}',
+            'class': 'fa-file-pdf-o'
           }],
           'grid': {
             'related': ['parent', 'children', 'services', 'datasets']
