@@ -173,6 +173,8 @@
       <item facet="format" max="15" sortBy="value" sortOrder="asc"/>
       <item facet="status" translator="codelist:gmd:MD_ProgressCode"/>
       <item facet="serviceType"/>
+      <item facet="groupOwner" max="199" sortBy="value"
+            translator="db:org.fao.geonet.repository.GroupRepository:findOne:int"/>
       <item facet="draft"/>
     </summaryType>
     <!-- END DELWP Addition -->
