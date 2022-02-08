@@ -1953,6 +1953,23 @@
 				</section>
 			</tab>
 
+      <!-- metadataConstraints -->
+      <tab id="metadataConstraints" mode="flat">
+        <section>
+          <field xpath="/mdb:MD_Metadata/mdb:metadataConstraints/mco:MD_SecurityConstraints/mco:useLimitation"/>
+          <action type="add" name="useLimitation" or="useLimitation" if="count(mdb:MD_Metadata/mdb:metadataConstraints/mco:MD_SecurityConstraints/mco:useLimitation)=0" in="/mdb:MD_Metadata/mdb:metadataConstraints/mco:MD_SecurityConstraints">
+            <template>
+              <snippet>
+                <mco:useLimitation>
+                  <gco:CharacterString/>
+                </mco:useLimitation>
+              </snippet>
+            </template>
+          </action>
+          <field xpath="/mdb:MD_Metadata/mdb:metadataConstraints/mco:MD_SecurityConstraints/mco:classification"/>
+				</section>
+			</tab>
+ 
       <!-- Elements that should not use the "flat" mode -->
       <flatModeExceptions>
         <for name="delwp:projectPartner"/>
