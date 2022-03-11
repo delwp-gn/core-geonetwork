@@ -152,7 +152,8 @@
   <summaryTypes>
     <!-- DELWP Addition -->
     <summaryType name="delwp" format="DIMENSION">
-      <item facet="rasterType" max="40" translator="codelist:mcc:MD_ScopeCode"/>
+      <item facet="type" translator="codelist:gmd:MD_ScopeCode"/>
+      <!--<item facet="rasterType" max="40" translator="codelist:mcc:MD_ScopeCode"/>-->
       <item facet="rasterAssemblyType" max="40" translator="codelist:delwp:MD_AssemblyCode"/>
       <item facet="platformType" max="40" translator="codelist:delwp:MD_PlatformTypeCode"/>
       <item facet="topicCat" translator="codelist:gmd:MD_TopicCategoryCode" max="20"/>
