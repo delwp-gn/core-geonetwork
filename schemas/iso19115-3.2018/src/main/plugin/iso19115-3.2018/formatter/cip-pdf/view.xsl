@@ -79,12 +79,18 @@
 
   <!-- The core formatter XSL layout based on the editor configuration -->
   <xsl:include href="sharedFormatterDir/xslt/render-layout.xsl"/> 
+  <!-- <xsl:include href="C:/svproject/SV005007_DELWP_Metadata/delwp-gn-core-geonetwork/web/src/main/webapp/WEB-INF/data/data/formatter/xslt/render-layout.xsl"/>  -->
   
   <!-- <xsl:include href="../../../../../data/formatter/xslt/render-layout.xsl"/> -->
 
   <!-- Define the metadata to be loaded for this schema plugin-->
   <xsl:variable name="metadata"
                 select="/root/mdb:MD_Metadata"/>
+  
+  <!-- <xsl:variable name="language"
+                select="'en'"/>
+  <xsl:variable name="schema"
+                select="'iso19115-3.2018'"/> -->
 
   <xsl:variable name="langId" select="gn-fn-iso19115-3.2018:getLangId($metadata, $language)"/>
 
@@ -115,21 +121,34 @@
    
   </xsl:template>
 
+  <!-- Set some styles -->
   <xsl:variable name="warnColour">#f4c842</xsl:variable>
   <xsl:variable name="errColour">#db2800</xsl:variable>
 
+  <!-- some reusable strings -->
   <xsl:variable name="nil"><span color="{$warnColour}">No field match / unsure of field mapping</span></xsl:variable>
   <xsl:variable name="missing"><span color="{$errColour}">Specific info missing from XML</span></xsl:variable>
   <xsl:variable name="redundant"><span>Potentially redundant information</span></xsl:variable>
 
-  <xsl:variable name="prestyle">overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; font-family: Arial, Helvetica, sans-serif;</xsl:variable>
+  <xsl:variable name="parentMissing">
+    <span><i>Field not present on parent record</i></span>
+  </xsl:variable>
+
+  <xsl:variable name="prestyle">overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; font-family: Arial, Helvetica, sans-serif; vertical-align: top;</xsl:variable>
   <xsl:variable name="footstyle">font-size: 12px;</xsl:variable>
+  <xsl:variable name="tdstyle">vertical-align: top;</xsl:variable>
 
   <!-- Dates -->
   <xsl:variable name="monthyear"><xsl:value-of select="format-dateTime(current-dateTime(),'[MNn] [Y0001]')"/></xsl:variable>
   <xsl:variable name="year"><xsl:value-of select="format-dateTime(current-dateTime(),'[Y0001]')"/></xsl:variable>
   <xsl:variable name="printdate"><xsl:value-of select="format-dateTime(current-dateTime(),'[D01]/[M01]/[Y0001] [h1]:[m01]:[s01] [P]')"/></xsl:variable>
 
+  <!-- Hardcoded values -->
+  <xsl:variable name="jurisdiction"><xsl:value-of select="'Victoria'"/></xsl:variable>  
+  <xsl:variable name="verticalDatum"><xsl:value-of select="'AHD'"/></xsl:variable>  
+
+  <!-- function to render CSW request for looking up associated records -->
+  <!-- not used in current implementation -->
   <xsl:function name="gn-fn-render:cswURL">
     <xsl:param name="uuid"/>
     <xsl:variable name="query">
@@ -138,35 +157,168 @@
     <xsl:value-of select="translate( concat('http://localhost:8080/geonetwork/srv/eng/csw?request=GetRecords&amp;service=CSW&amp;version=2.0.2&amp;namespace=xmlns%28csw%3Dhttp%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2F2.0.2%29%2Cxmlns%28gmd%3Dhttp%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd%29&amp;constraint=', $query, '&amp;constraintLanguage=CQL_TEXT&amp;constraint_language_version=1.1.0&amp;typeNames=mdb:MD_Metadata&amp;resultType=results&amp;ElementSetName=full&amp;outputSchema=http://standards.iso.org/iso/19115/-3/mdb/2.0'), ' ', '')" />
   </xsl:function>
 
+  <!-- Create API url for looking up associated records -->
+  <xsl:function name="gn-fn-render:APIURL">
+    <xsl:param name="uuid"/>
+    <xsl:value-of select="concat( 'http://localhost:8080/geonetwork/srv/api/records/', $uuid, '/formatters/xml?approved=true' )" />
+  </xsl:function>
+
+  <!-- BEGIN RENDERING REPORT TEMPLATE -->
   <xsl:template mode="renderExport" match="mdb:MD_Metadata">
 
+    <!-- store scope of record - i.e. project or dataset -->
+    <xsl:variable name="rawscope"><xsl:value-of select="mdb:metadataScope/*/mdb:resourceScope/mcc:MD_ScopeCode/@codeListValue" /></xsl:variable>
+    <!-- make capitalised scope for use in headings -->
+    <xsl:variable name="datascope">
+      <xsl:value-of select="concat( translate(substring($rawscope, 1, 1), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), substring($rawscope, 2))" />
+    </xsl:variable>
+
+    <!-- store title -->
     <xsl:variable name="title">
       <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title" />
     </xsl:variable>
 
-    <div style="font-family: Arial, Helvetica, sans-serif;">
+    <!-- START PROCESSING ASSOCIATED RECORDS -->
 
+    <!-- get available associated records -->
+    <!-- nb. this is a list or mri:associatedResource elements from the parent project, not the records themselves -->
+    <!-- use the doc-available() function on the rendered URL to test if we can access it -->
+    <xsl:variable name="availableAssocRecords" 
+      select=" mdb:identificationInfo/mri:MD_DataIdentification/mri:associatedResource[
+        doc-available( gn-fn-render:APIURL( mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) ) 
+        ]" />
+    
+    <!-- same as above, but these are the associated records that are not available -->
+    <xsl:variable name="missingAssocRecords" 
+      select="mdb:identificationInfo/mri:MD_DataIdentification/mri:associatedResource[
+        not( doc-available( gn-fn-render:APIURL( mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) ) )
+        ]" />
+    
+    <!-- 
+    loop records and see if they have a "dem" element 
+    we need this to render the headers properly, because I can't find a good way of 
+    storing whole documents in a list. The demExists variable value will be string of numbers representing t/f if 
+    they have the dem element
+
+    e.g. if there are 3 records and the second one is a DEM, then the value will be 010.
+    Parsing this text value into a number will result in 0 if there are no records that match dem
+    and greater than 0 if there are results 
+    -->
+    <xsl:variable name="demExists">
+      <xsl:for-each select="$availableAssocRecords">
+        <xsl:variable name="resDoc" 
+        select=" document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+        <xsl:choose>
+          <xsl:when test="$resDoc//delwp:dem">
+            <xsl:value-of select="concat( position(), ',' ) " />
+          </xsl:when>
+        </xsl:choose>
+        
+      </xsl:for-each>
+    </xsl:variable>
+
+    <!-- save index of first record to use for generic fields -->
+    <xsl:variable name="demIndex">
+      <xsl:value-of select="number( substring-before($demExists, ',') )" />
+    </xsl:variable>
+
+    <!-- as above for, but point cloud records -->
+    <xsl:variable name="pointCloudExists">
+      <xsl:for-each select="$availableAssocRecords">
+        <xsl:variable name="resDoc" 
+        select=" document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+        <xsl:choose>
+            <xsl:when test="$resDoc//delwp:pointCloudDetails">
+            <xsl:value-of select="concat( position(), ',' ) " />
+          </xsl:when>
+        </xsl:choose>
+        
+      </xsl:for-each>
+    </xsl:variable>
+
+    <xsl:variable name="pointCloudIndex">
+      <xsl:value-of select="number( substring-before($pointCloudExists, ',') )" />
+    </xsl:variable>
+
+    <!-- as above, but for contour records -->
+    <xsl:variable name="contourExists">
+      <xsl:for-each select="$availableAssocRecords">
+        <xsl:variable name="resDoc" 
+        select=" document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+        <xsl:choose>
+          <xsl:when test="$resDoc//delwp:contourDetails">
+            <xsl:value-of select="concat( position(), ',' ) " />
+          </xsl:when>
+        </xsl:choose>
+        
+      </xsl:for-each>
+    </xsl:variable>
+
+    <xsl:variable name="contourIndex">
+      <xsl:value-of select="number( substring-before($contourExists, ',') )" />
+    </xsl:variable>
+
+    <!-- 
+      Save list of dates to string variable 
+      We can't store the list of fetched docs, so we need to go get each of the docs, and store their dates in a comma-separated string.
+      We can then parse and sort the dates to get the min and max dates for a project
+    -->
+    <xsl:variable name="projDates">
+      <xsl:for-each select="$availableAssocRecords">
+        <xsl:variable name="resDoc" 
+        select=" document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+
+        <xsl:value-of select="concat( $resDoc//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition, ',' ) " />
+        <xsl:value-of select="concat( $resDoc//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition, ',' ) " />
+        
+      </xsl:for-each>
+    </xsl:variable>
+
+    <!-- parse out minimum date from list of dates -->
+    <xsl:variable name="projMinDate">
+      <xsl:for-each select="tokenize( substring($projDates, 1, string-length($projDates) - 1), ',')">
+        <xsl:sort select="." order="ascending"/>
+        <xsl:if test="position() = 1">
+            <xsl:value-of select="." />
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+
+    <!-- parse out maximum date from list of dates -->
+    <xsl:variable name="projMaxDate">
+      <xsl:for-each select="tokenize( substring($projDates, 1, string-length($projDates) - 1), ',')">
+        <xsl:sort select="." order="descending"/>
+        <xsl:if test="position() = 1">
+            <xsl:value-of select="." />
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+
+    <!-- Start creating report body -->
+    <div style="font-family: Arial, Helvetica, sans-serif;">
+      
+      <!-- report header -->
       <h1><xsl:value-of select="$title" /></h1>
+      <h3>Vicmap Imagery and Elevation Metadata Report</h3>
 
       <h2>Description</h2>
       <!-- Head section -->
       <table width="100%" class="identification">
         <tr>
+          <!-- title -->
           <td width="30%"><strong>Title:</strong></td>
           <td><xsl:value-of select="$title"/></td>
         </tr>
         <tr>
+          <!-- custodian -->
           <td><strong>Custodian:</strong></td>
           <td>
             <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:citedResponsibleParty/cit:CI_Responsibility[cit:role/cit:CI_RoleCode/@codeListValue = 'custodian' ]/cit:party/cit:CI_Organisation/cit:name" />
           </td>
         </tr>
-        <!-- <tr>
-          <td><strong>Jurisdiction:</strong></td>
-          <td><xsl:value-of select="$nil"/></td>
-        </tr> -->
         <tr>
-          <td><strong>Abstract:</strong></td>
+          <!-- abstract -->
+          <td style="vertical-align: top;"><strong>Abstract:</strong></td>
           <td>
             <pre style="{$prestyle}">
               <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:abstract"/>
@@ -174,27 +326,37 @@
           </td>
         </tr>
         <tr>
+          <!-- extent -->
           <td><strong>Geographic Extent:</strong></td>
+          <td>
+            <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:description"/>
+          </td>
+        </tr>
+        <td></td>
           <xsl:choose>
-            <xsl:when test="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_GeographicBoundingBox">
-              <td>
-                <xsl:apply-templates mode="render-field" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_GeographicBoundingBox" />
-              </td>
-            </xsl:when>
-            <xsl:when test="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_BoundingPolygon">
-              <td>
-                <xsl:apply-templates mode="render-field" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_BoundingPolygon" />
-              </td>
-            </xsl:when>
-            <xsl:otherwise>
-              <td>None provided</td>
-            </xsl:otherwise>
-          </xsl:choose>
-          
-          
-        </tr>        
+          <xsl:when test="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_GeographicBoundingBox">
+            <td>
+              <xsl:apply-templates mode="render-field" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_GeographicBoundingBox" />
+            </td>
+          </xsl:when>
+          <xsl:when test="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_BoundingPolygon">
+            <td>
+              <xsl:apply-templates mode="render-field" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_BoundingPolygon" />
+            </td>
+          </xsl:when>
+          <xsl:otherwise>
+            <td>None extent polygon provided</td>
+          </xsl:otherwise>
+        </xsl:choose>
+        <tr>
+          <!-- jurisdiction -->
+          <td><strong>Jursidiction:</strong></td>
+          <td><xsl:value-of select="$jurisdiction"/></td>
+        </tr>
       </table>
 
+      
+      <!-- old graphic overview image -->
       <!-- <xsl:for-each select="mdb:identificationInfo/*/mri:graphicOverview/*">
         <div>
           <img src="{mcc:fileName/*}" style="height: auto; display: inline-block" />
@@ -204,165 +366,572 @@
         </div>
       </xsl:for-each> -->
 
-      <h2>General Dataset Details</h2>
-      <table>
-        <tr>
-          <td><strong>Acquisition Date:</strong></td>
-          <td><xsl:apply-templates mode="render-value" select="mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition" /> - <xsl:apply-templates mode="render-value" select="mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition" /></td>
-          <td><strong>Projection</strong></td>
-          <td>
-            <xsl:value-of select="mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code" />
-          </td>
-          <td><strong>Vertical Datum</strong></td>
-          <td>
-            -
-          </td>
-        </tr>
-      </table>
+      <!-- handle projects -->
+      <xsl:choose>
+        <xsl:when test="$rawscope = 'project'">
+          <h2>General <xsl:value-of select="$datascope"/> Details</h2>
+          <table>
+            <tr>
+              <td><strong>Acquisition Date:</strong></td>
+              <td>
+                <span data-gn-humanize-time="{$projMinDate}" data-format="DD MMM YYYY"><xsl:value-of select="$projMinDate" /></span> to 
+                <span data-gn-humanize-time="{$projMaxDate}" data-format="DD MMM YYYY"><xsl:value-of select="$projMaxDate" /></span></td>
+              <!-- <td><strong>Projection</strong></td>
+              <td>
+                <xsl:value-of select="mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code" />
+              </td> -->
+            </tr>
+          </table>
+        
+        </xsl:when>
 
-      <hr />
+        <!-- handle datasets -->
+        <!-- will probably remove this bit -->
+        <xsl:when test="$rawscope = 'dataset'">
+
+          <xsl:choose>
+            <!-- LIDAR TEMPLATE -->
+            <xsl:when test="*//delwp:pointCloudDetails">
+              <h2>LiDAR Point Cloud Details</h2>
+              <table>
+                <tr>
+                  <td><strong>Average Point Density:</strong></td>
+                  <td>
+                    <xsl:value-of select="*//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual" />
+                  </td>
+                  <td><strong>Sensor Name:</strong></td>
+                  <td>
+                    <xsl:value-of select="mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:instrument/mac:MI_Sensor/mac:citation/cit:CI_Citation/cit:title" />
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Footprint Size:</strong></td>
+                  <td>
+                    <xsl:value-of select="*//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:footprintSize" />
+                  </td>
+                  <td><strong>Stored Data Format:</strong></td>
+                  <td>
+                      <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat" />
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Pulse Mode:</strong></td>
+                  <td>
+                    ???
+                  </td>
+                  <td><strong>Classification:</strong></td>
+                  <td>
+                    ???
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Return Type:</strong></td>
+                  <td>
+                    ???
+                  </td>
+                </tr>
+              </table>
+
+              <hr />
+
+              <table style="margin-top: 10px; width: 100%;">
+                <tr>
+                  <th>Dataset</th>
+                  <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
+                  <th>Vertical Accuracy</th>
+                  <th>Average Point Density</th>
+                  <th>
+                    Projection
+                  </th>
+                  <th>Vertical Datum</th>
+                  <th>Stored Format</th>
+                  <th>Class</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                </tr>
+                <xsl:apply-templates mode="render-cip-associated-record" select="." />
+              </table>
+
+              <hr />
+
+
+            </xsl:when>
+
+            <!-- CONTOUR TEMPLATE -->
+            <xsl:when test="*//delwp:contourDetails">
+
+              <h2>Contour Details</h2>
+              <table>
+                <tr>
+                  <td><strong>Stored Data Format:</strong></td>
+                  <td>
+                    <td><xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title"/></td>
+                  </td>
+                </tr>
+              </table>
+
+              <hr />
+
+              <table style="margin-top: 10px; width: 100%;">
+                <tr>
+                  <th>Dataset</th>
+                  <th>Contour Interval</th>
+                  <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
+                  <th>Vertical Accuracy</th>
+                  <th>
+                    Projection
+                  </th>
+                  <th>Vertical Datum</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                </tr>
+                <xsl:apply-templates mode="render-cip-associated-record" select="." />
+              </table>
+
+              <hr />
+
+            </xsl:when>
+
+            <!-- DEM TEMPLATE -->
+            <xsl:when test="*//delwp:dem">
+
+              <h2>Digital Elevation Model Details</h2>
+              <table>
+                <tr>
+                  <td><strong>Stored Data Format:</strong></td>
+                  <td>
+                    <td><xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title"/></td>
+                  </td>
+                </tr>
+              </table>
+
+              <hr />
+
+              <table style="margin-top: 10px; width: 100%;">
+                <tr>
+                  <th>Dataset</th>
+                  <th>Resolution</th>
+                  <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
+                  <th>Vertical Accuracy</th>
+                  <th>
+                    Projection
+                  </th>
+                  <th>Vertical Datum</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                </tr>
+                <xsl:apply-templates mode="render-cip-associated-record" select="." />
+              </table>
+
+              <hr />
+
+            </xsl:when>
+            <xsl:otherwise></xsl:otherwise>
+
+          </xsl:choose>
+        
+        
+        </xsl:when>
+        <xsl:otherwise></xsl:otherwise>
+
       
-      <h2>Aerial Photography Details</h2>
-      <table>
-        <tr>
-          <td><strong>Sensor Name:</strong></td>
-          <td>
-            <xsl:value-of select="mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:instrument/mac:MI_Sensor/mac:citation/cit:CI_Citation/cit:title" />
-          </td>
-          <td><strong>Number of Bands:</strong></td>
-          <td>
-            <xsl:value-of select="*//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:numberOfBands" />
-          </td>
-        </tr>
-        <tr>
-          <td><strong>Stored Data Format:</strong></td>
-          <td>
-              <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat" />
-          </td>
-          <td><strong>Tile Size:</strong></td>
-          <td>
-            <xsl:value-of select="*//delwp:tileSize/delwp:MD_TileSizeCode/@codeListValue" />
-          </td>
-        </tr>
-      </table>
+      </xsl:choose>
 
-      <hr />
-      <h2>Component Datasets</h2>
-      <table style="margin-top: 10px; width: 100%;">
+      <!-- RENDER ASSOCIATED RECORDS -->
+      <!-- test if there are any point cloud records
+      i.e. when casting the pointCloudExists variable to a number, it is greater than 0 -->
+      <xsl:if test="$pointCloudIndex > 0">
+
+        <xsl:variable name="pointCloudIndexDoc" 
+          select="document( gn-fn-render:APIURL( ($availableAssocRecords)[ number($pointCloudIndex) ]/mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+
+        <!-- write single set of headers if there are any records -->
+        <h2>LiDAR Point Cloud Details</h2>
+
+        <!-- <table>
+          <tr>
+            <td><strong>Average Point Density:</strong></td>
+            <td>
+              <xsl:choose>
+                <xsl:when test="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual">
+                  <xsl:value-of select="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual" /> 
+                  <xsl:value-of select="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual/gco:Measure/@uom" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$missing"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </td>
+            <td><strong>Sensor Name:</strong></td>
+            <td>
+              <xsl:choose>
+                <xsl:when test="$pointCloudIndexDoc//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:instrument/mac:MI_Sensor/mac:citation/cit:CI_Citation/cit:title">
+                  <xsl:value-of select="$pointCloudIndexDoc//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:instrument/mac:MI_Sensor/mac:citation/cit:CI_Citation/cit:title" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$missing"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Footprint Size:</strong></td>
+            <td>
+              <xsl:choose>
+                <xsl:when test="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:footprintSize">
+                  <xsl:value-of select="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:footprintSize" />
+                  <xsl:value-of select="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:footprintSize/gco:Measure/@uom" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$missing"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </td>
+            <td><strong>Stored Data Format:</strong></td>
+            <td>
+                <xsl:choose>
+                <xsl:when test="$pointCloudIndexDoc//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat">
+                  <xsl:value-of select="$pointCloudIndexDoc//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$missing"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Pulse Mode:</strong></td>
+            <td>
+              <xsl:value-of select="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pulseMode" />
+            </td>
+            <td><strong>Classification:</strong></td>
+            <td>
+              <xsl:value-of select="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:classification/delwp:MD_Classification/delwp:classLevel" />
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Return Type:</strong></td>
+            <td>
+              <xsl:value-of select="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:returnType" />
+            </td>
+          </tr>
+        </table> -->
+
+        <hr />
+
+        <table style="margin-top: 10px; width: 100%;">
         <tr>
-          <th>Record</th>
           <th>Dataset</th>
-          <th>Resolution</th>
+          <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
+          <th>Vertical Accuracy</th>
+          <th>Average Point Density</th>
           <th>
-            Horizontal*
+            Projection
           </th>
+          <th>Vertical Datum</th>
+          <th>Stored Format</th>
+          <th>Class</th>
           <th>Start Date</th>
           <th>End Date</th>
         </tr>
-        <xsl:for-each select="mdb:identificationInfo/mri:MD_DataIdentification/mri:associatedResource">
-          
-          <!-- extract URL -->
-          <xsl:variable name="resLink" select="mri:MD_AssociatedResource/mri:metadataReference/cit:CI_Citation/cit:onlineResource/cit:CI_OnlineResource/cit:linkage" />
-          
-          <!-- Extract uuid from URL -->
-          <xsl:variable name="uuid">
-            <xsl:value-of select="normalize-space(substring-after($resLink, '='))" />
-          </xsl:variable>
 
-          <!-- Dummy UUID -->
-          <!-- <xsl:variable name="uuid">
-            <xsl:text>28fe27b29091e0481d07107e018503367e68a0d2</xsl:text>
-          </xsl:variable> -->
-          
-          <!-- Create CSW URI from extracted uuid -->
-          <!-- <xsl:variable name="uriString">
-            <xsl:value-of select="concat( 'http://localhost:8080/geonetwork/srv/eng/csw?request=GetRecords&amp;service=CSW&amp;version=2.0.2&amp;namespace=xmlns%28csw%3Dhttp%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2F2.0.2%29%2Cxmlns%28gmd%3Dhttp%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd%29&amp;constraint=Identifier+like+%27', $uuid , '%27&amp;constraintLanguage=CQL_TEXT&amp;constraint_language_version=1.1.0&amp;typeNames=mdb:MD_Metadata&amp;resultType=results&amp;ElementSetName=full&amp;outputSchema=http://standards.iso.org/iso/19115/-3/mdb/2.0')" />
-          </xsl:variable> -->
+        <!-- loop records -->
+        <xsl:for-each select="$availableAssocRecords">
 
-          <!-- Create API request from UUID -->
-          <xsl:variable name="uriString">
-            <xsl:value-of select="concat( 'http://localhost:8080/geonetwork/srv/api/records/', $uuid , '/formatters/xml' )" />
-          </xsl:variable>
+            <xsl:variable name="resDoc" 
+              select="document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+            
+            <xsl:choose>
+              <xsl:when test="$resDoc//delwp:pointCloudDetails">
 
-          <!-- https://dev-metashare.maps.vic.gov.au -->
-          
-          <!-- Create XML document from CSW request -->
-          <xsl:variable name="resourceDoc" select="document( $uriString )" />
-          
-          <!-- Catch empty serach results and throw warning -->
-          <xsl:choose>
-            <xsl:when test="$resourceDoc//@numberOfRecordsReturned != 0 or not($resourceDoc//@numberOfRecordsReturned)">
-              <tr>
-                <td>
-                  <xsl:value-of select="position()" />
-                  <!-- <a href="{$uriString}" target="blank">XML</a> -->
-                </td>
-                <td>
-                  <a href="{$resLink}" target="blank">
-                    <xsl:value-of select="$resourceDoc//mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title" />
-                  </a>
-                </td>
-                
-                <td>
-                  <xsl:value-of select="$resourceDoc//msr:MD_Dimension[msr:dimensionName/msr:MD_DimensionNameTypeCode/@codeListValue = 'row']/msr:resolution" />
-                  <xsl:value-of select="$resourceDoc//msr:MD_Dimension[msr:dimensionName/msr:MD_DimensionNameTypeCode/@codeListValue = 'row']/msr:resolution/gco:Measure/@uom" />
-                </td>
-                <td>
-                  
-                  <xsl:value-of select="$resourceDoc//mri:spatialResolution" />
-                  <xsl:value-of select="$resourceDoc//mri:spatialResolution//gco:Distance/@uom" />
-                </td>
-                
-                <td>
-                  <xsl:apply-templates mode="render-value" select="$resourceDoc//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition" />
-                </td>
-                <td>
-                  <xsl:apply-templates mode="render-value" select="$resourceDoc//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition" />
-                </td>
-              </tr>
-            </xsl:when>
-            <xsl:otherwise>
-              <tr style="background-color: {$warnColour}">
-                <td colspan="5">
-                  * Error: cannot retrieve record with UUID <xsl:value-of select="$uuid" />. It either does not exist or requires authorisation. <br />
-                    <a href="{$uriString}" target="blank">CSW Request</a>
-                </td>
-              </tr>
-            </xsl:otherwise>
-          </xsl:choose>
+                  <xsl:apply-templates mode="render-cip-associated-record" select="$resDoc" />
 
+              </xsl:when>
+            </xsl:choose>
+            
         </xsl:for-each>
-      </table>
-      <caption style="text-align: left; font-size: 6pt; padding-top:5px;">
-          * Accuracy (RMSE 68% Conf.)
-      </caption>
+        </table>
 
-      <table>
+        <h3>Processing Lineage:</h3>
+        <xsl:choose>
+          <xsl:when test="$pointCloudIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description or $pointCloudIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description">
+
+              
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$pointCloudIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description"/>
+              </pre>
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$pointCloudIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description"/>
+              </pre>
+            
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <h3>Logical Consistency:</h3>
+        <xsl:choose>
+          <xsl:when test="$pointCloudIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
+              
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$pointCloudIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
+              </pre>
+
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <h3>Completeness:</h3>
+        <xsl:choose>
+          <xsl:when test="$pointCloudIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
+              
+              <pre style="{$prestyle}">
+            <xsl:apply-templates mode="render-value" select="$pointCloudIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
+          </pre>
+
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <hr />
+        
+      </xsl:if>
+
+      <!-- test if there are any dem records  -->
+      <xsl:if test="$demIndex > 0">
+
+        <xsl:variable name="demIndexDoc" 
+          select="document( gn-fn-render:APIURL( ($availableAssocRecords)[ number($demIndex) ]/mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+
+        <!-- write single set of headers if there are any records -->
+        <h2>Digital Elevation Model Details</h2>
+
+        <!-- summary table - TBC if this comes from a single child dataset -->
+        <table>
+          <tr>
+            <td><strong>Stored Data Format:</strong></td>
+            <td>
+              <td>
+                <xsl:choose>
+                <xsl:when test="$demIndexDoc//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title">
+                  <xsl:value-of select="$demIndexDoc//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$missing"/>
+                </xsl:otherwise>
+              </xsl:choose>
+              </td>
+            </td>
+          </tr>
+        </table>
+
+        <hr />
+
+        <table style="margin-top: 10px; width: 100%;">
         <tr>
-          <td><strong>Processing Lineage:</strong></td>
-          <td>
-            <pre style="{$prestyle}">
-              <xsl:apply-templates mode="render-value" select="mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description"/>
-            </pre>
-          </td>
+          <th>Dataset</th>
+          <th>Resolution</th>
+          <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
+          <th>Vertical Accuracy</th>
+          <th>
+            Projection
+          </th>
+          <th>Vertical Datum</th>
+          <th>Start Date</th>
+          <th>End Date</th>
         </tr>
+
+        <!-- loop rows to populate table -->
+        <xsl:for-each select="$availableAssocRecords">
+            <!-- fetch xml record -->
+            <xsl:variable name="resDoc" 
+              select="document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+            
+            <xsl:choose>
+              <xsl:when test="$resDoc//delwp:dem">
+                
+                <xsl:apply-templates mode="render-cip-associated-record" select="$resDoc" />
+
+              </xsl:when>
+            </xsl:choose>
+            
+        </xsl:for-each>
+        <!-- close table -->
+        </table>
+
+        <h3>Processing Lineage:</h3>
+        <xsl:choose>
+          <xsl:when test="$demIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description or $demIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description">
+
+              
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$demIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description"/>
+              </pre>
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$demIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description"/>
+              </pre>
+            
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <h3>Logical Consistency:</h3>
+        <xsl:choose>
+          <xsl:when test="$demIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
+              
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$demIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
+              </pre>
+
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <h3>Completeness:</h3>
+        <xsl:choose>
+          <xsl:when test="$demIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
+              
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$demIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
+              </pre>
+
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <hr />
+      </xsl:if>
+
+      <!-- test if there are any contour records
+      i.e. when casting the contourIndex variable to a number, it is greater than 0 -->
+      <xsl:if test="$contourIndex > 0">
+
+        <xsl:variable name="contourIndexDoc" 
+          select="document( gn-fn-render:APIURL( ($availableAssocRecords)[ number($contourIndex) ]/mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+
+        <!-- write single set of headers if there are any records -->
+        <h2>Contour Details</h2>
+        <table>
+          <tr>
+            <td><strong>Stored Data Format:</strong></td>
+            <td>
+              <td>
+                <xsl:choose>
+                <xsl:when test="$contourIndexDoc//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title">
+                  <xsl:value-of select="$contourIndexDoc//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$missing"/>
+                </xsl:otherwise>
+              </xsl:choose>
+              </td>
+            </td>
+          </tr>
+        </table>
+
+        <hr />
+
+        <table style="margin-top: 10px; width: 100%;">
         <tr>
-          <td><strong>Logical Consistency:</strong></td>
-          <td>
-            <pre style="{$prestyle}">
-              <xsl:apply-templates mode="render-value" select="mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
-            </pre>
-          </td>
+          <th>Dataset</th>
+          <th>Contour Interval</th>
+          <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
+          <th>Vertical Accuracy</th>
+          <th>
+            Projection
+          </th>
+          <th>Vertical Datum</th>
+          <th>Start Date</th>
+          <th>End Date</th>
         </tr>
-        <tr>
-          <td><strong>Completeness:</strong></td>
-          <td>
-            <pre style="{$prestyle}">
-              <xsl:apply-templates mode="render-value" select="mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
-            </pre>
-          </td>
-        </tr>
-      </table>
+        <xsl:for-each select="$availableAssocRecords">
+
+            <xsl:variable name="resDoc" 
+              select="document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+            
+            <xsl:choose>
+              <xsl:when test="$resDoc//delwp:contourDetails">
+                
+                <xsl:apply-templates mode="render-cip-associated-record" select="$resDoc" />
+              </xsl:when>
+            </xsl:choose>
+            
+        </xsl:for-each>
+        </table>
+        
+        <h3>Processing Lineage:</h3>
+        <xsl:choose>
+          <xsl:when test="$contourIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description or $contourIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description">
+
+              
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$contourIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description"/>
+              </pre>
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$contourIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description"/>
+              </pre>
+            
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <h3>Logical Consistency:</h3>
+        <xsl:choose>
+          <xsl:when test="$contourIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
+              
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$contourIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
+              </pre>
+
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <h3>Completeness:</h3>
+        <xsl:choose>
+          <xsl:when test="$contourIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
+              
+              <pre style="{$prestyle}">
+            <xsl:apply-templates mode="render-value" select="$contourIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
+          </pre>
+
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+      </xsl:if>
+      
+      <!-- handle any associated records that could not be accessed -->
+      <xsl:if test="count($missingAssocRecords) > 0">
+        <h1>Other associated records</h1>
+        <xsl:for-each select="$missingAssocRecords">
+          <p>Could not retrieve record for <a href="{.//cit:linkage}" target="blank"><xsl:value-of select=".//cit:title" /></a>.</p>
+        </xsl:for-each>  
+      </xsl:if>
+     
+      <!-- <caption style="text-align: left; font-size: 6pt; padding-top:5px;">
+          * Accuracy (RMSE 68% Conf.)
+      </caption> -->
+
+
+      <hr />
     
       <div>
         <div style="width: 75%; float: left;">
@@ -381,6 +950,109 @@
     </div>
   </xsl:template>
 
+  <xsl:template mode="render-cip-associated-record" match="*">
+    <xsl:choose>
+      <xsl:when test=".//delwp:contourDetails">
+
+          <tr>
+            <td>
+              <a href="{.//cit:linkage}" target="blank">
+                <xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title"/>
+              </a>
+            </td>
+            <td><xsl:value-of select=".//delwp:contourDetails/delwp:MD_ContourDetails/delwp:interval"/></td>
+            <td><xsl:value-of select="$nil"/></td>
+            <td><xsl:value-of select="$nil"/></td>
+            <td><xsl:value-of select=".//mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code"/></td>
+            <td><xsl:value-of select="$verticalDatum"/></td>
+            <td>
+              <span data-gn-humanize-time="{.//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition}" data-format="DD MMM YYYY">
+                <xsl:value-of select=".//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition" />
+              </span>
+            </td>
+            <td>
+              <span data-gn-humanize-time="{.//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition}" data-format="DD MMM YYYY">
+                <xsl:value-of select=".//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition" />
+              </span>
+            </td>
+          </tr>
+
+      </xsl:when>
+      <xsl:when test=".//delwp:dem">
+ 
+          <tr>
+            <td>
+              <a href="{.//cit:linkage}" target="blank">
+                <xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title"/>
+              </a>
+            </td>
+            <td>
+              <xsl:for-each select=".//mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties/msr:MD_Dimension">
+                <xsl:choose>
+                  <xsl:when test=".//msr:dimensionName/msr:MD_DimensionNameTypeCode/@codeListValue = 'column'">
+                    <xsl:apply-templates select="msr:resolution"/><xsl:value-of select="msr:resolution/gco:Measure/@uom"/> <br />
+                  </xsl:when>
+                </xsl:choose> 
+              </xsl:for-each>
+            </td>
+            <td>
+              <xsl:for-each select=".//mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties/msr:MD_Dimension">
+                <xsl:choose>
+                  <xsl:when test="msr:dimensionName/msr:MD_DimensionNameTypeCode/@codeListValue = 'row'">
+                    <xsl:apply-templates select="msr:resolution"/><xsl:value-of select="msr:resolution/gco:Measure/@uom"/>
+                  </xsl:when>
+                </xsl:choose> 
+              </xsl:for-each>
+            </td>
+            <td><xsl:value-of select="$nil"/></td>
+            <td><xsl:value-of select=".//mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code"/></td>
+            <td><xsl:value-of select="$verticalDatum"/></td>
+            <td>
+              <span data-gn-humanize-time="{.//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition}" data-format="DD MMM YYYY">
+                <xsl:value-of select=".//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition" />
+              </span>
+            </td>
+            <td>
+              <span data-gn-humanize-time="{.//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition}" data-format="DD MMM YYYY">
+                <xsl:value-of select=".//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition" />
+              </span>
+            </td>
+          </tr>
+
+      </xsl:when>
+      <xsl:when test=".//delwp:pointCloudDetails">
+    
+          <tr>
+            <td>
+              <a href="{.//cit:linkage}" target="blank">
+                <xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title"/>
+              </a>
+            </td>
+            <td><xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:distance"/></td>
+            <td><xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:vertical"/></td>
+            <td>
+              <xsl:value-of select=".//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual" /> 
+              <xsl:value-of select=".//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual/gco:Measure/@uom" />
+            </td>
+            <td><xsl:value-of select=".//mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code"/></td>
+            <td><xsl:value-of select="$verticalDatum"/></td>
+            <td><xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat" /></td>
+            <td><xsl:value-of select=".//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:classification/delwp:MD_Classification/delwp:classLevel" /></td>
+            <td>
+              <span data-gn-humanize-time="{.//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition}" data-format="DD MMM YYYY">
+                <xsl:value-of select=".//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition" />
+              </span>
+            </td>
+            <td>
+              <span data-gn-humanize-time="{.//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition}" data-format="DD MMM YYYY">
+                <xsl:value-of select=".//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition" />
+              </span>
+            </td>
+          </tr>
+
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
 
   <!-- FIELD RENDERING -->
   <!-- time period fields -->
@@ -414,10 +1086,6 @@
       </td>
     </tr>
   </xsl:template>
-  
-
-
-
 
   <!-- Bbox is displayed with an overview and the geom displayed on it
   and the coordinates displayed around -->
@@ -669,7 +1337,7 @@
   </xsl:template>
 
   <!-- ... Codelists -->
-  <xsl:template mode="render-value"
+  <!-- <xsl:template mode="render-value"
                 match="@codeListValue">
     <xsl:variable name="id" select="."/>
     <xsl:variable name="codelistTranslation"
@@ -689,10 +1357,10 @@
         <xsl:value-of select="$id"/>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:template>
+  </xsl:template> -->
 
   <!-- Enumeration -->
-  <xsl:template mode="render-value"
+  <!-- <xsl:template mode="render-value"
                 match="mri:MD_TopicCategoryCode|
                        mex:MD_ObligationCode[1]|
                        msr:MD_PixelOrientationCode[1]|
@@ -716,7 +1384,7 @@
         <xsl:value-of select="$id"/>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:template>
+  </xsl:template> -->
 
   <xsl:template mode="render-value"
                 match="@gco:nilReason[. = 'withheld']"
