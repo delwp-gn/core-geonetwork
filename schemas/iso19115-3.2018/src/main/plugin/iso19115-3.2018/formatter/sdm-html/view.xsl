@@ -124,6 +124,14 @@
       <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title" />
     </xsl:variable>
 
+    <xsl:variable name="altTitle">
+      <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:alternateTitle" />
+    </xsl:variable>
+
+    <xsl:variable name="ccLinkage">
+      <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceConstraints/mco:MD_LegalConstraints/mco:reference/cit:CI_Citation/cit:CI_OnlineResource/cit:linkage"/>
+    </xsl:variable>
+
     <xsl:variable name="id">
       <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:identifier/mcc:MD_Identifier[mcc:authority]/mcc:code" />
     </xsl:variable>
@@ -131,6 +139,18 @@
     <xsl:variable name="level">
       <xsl:apply-templates mode="render-value" select="mdb:metadataScope/mdb:MD_MetadataScope/mdb:resourceScope/mcc:MD_ScopeCode/@codeListValue" />
     </xsl:variable>
+
+    <!-- custom styling to override external css -->
+    <style type="text/css">
+      .listTable tbody { 
+        vertical-align: top !important; 
+      }
+      .keyColumn { 
+        white-space:nowrap; 
+        padding-top: 10px;
+        padding-bottom: 10px;
+       }
+      </style>
 
     <table id="main">
       <tr>
@@ -164,33 +184,33 @@
                 <div>
                   <table class="listTable">
                     <tr class="labelCell">
-                      <th>Metadata Name</th>
+                      <th class="keyColumn">Metadata Name</th>
                       <th>Descriptions</th>
                     </tr>
                     <tr class="labelCell">
-                      <td>Resource Name:</td>
+                      <td  class="keyColumn">Resource Name:</td>
+                      <td><xsl:value-of select="$altTitle"/></td>
+                    </tr>
+                    <tr class="labelCell">
+                      <td class="keyColumn">Title:</td>
                       <td><xsl:value-of select="$title"/></td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Title:</td>
-                      <td><xsl:value-of select="$title"/></td>
-                    </tr>
-                    <tr class="labelCell">
-                      <td>Anzlic ID:</td>
+                      <td class="keyColumn">Anzlic ID:</td>
                       <td><xsl:value-of select="$id"/></td>
                     </tr>
                     <!-- <tr class="labelCell">
-                      <td>Cutodial Program:</td>
+                      <td class="keyColumn">Cutodial Program:</td>
                       <td><xsl:copy-of select="$missing"/></td>
                     </tr> -->
                     <tr class="labelCell">
-                      <td>Custodian:</td>
+                      <td class="keyColumn">Custodian:</td>
                       <td>
                         <xsl:apply-templates mode="render-value" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:citedResponsibleParty/cit:CI_Responsibility[cit:role/cit:CI_RoleCode/@codeListValue = 'custodian']/cit:party/cit:CI_Organisation/cit:name"/>
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Abstract:</td>
+                      <td class="keyColumn">Abstract:</td>
                       <td>
                         <pre style="{$prestyle}">
                           <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:abstract"/>
@@ -198,7 +218,7 @@
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Search Words:</td>
+                      <td class="keyColumn">Search Words:</td>
                       <td>
                         <xsl:for-each select="mdb:identificationInfo/mri:MD_DataIdentification//mri:topicCategory">
                           <xsl:apply-templates mode="render-value" select="mri:MD_TopicCategoryCode"/>
@@ -211,44 +231,60 @@
                       <td><xsl:copy-of select="$missing"/></td>
                     </tr> -->
                     <tr class="labelCell">
-                      <td>Currency Date:</td>
+                      <td class="keyColumn">Publication Date:</td>
                       <td>
-                          <xsl:value-of select="format-dateTime(current-dateTime(),'[D01] [MNn] [Y0001]')"/>
+                          <xsl:value-of select="format-dateTime(mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceMaintenance/mmi:MD_MaintenanceInformation/mmi:maintenanceDate/cit:CI_Date/cit:date,'[D01] [MNn] [Y0001]')"/>
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Dataset Status:</td>
-                      <td>
-                        <xsl:apply-templates mode="render-value" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:status/mcc:MD_ProgressCode/@codeListValue"/>
-                      </td>
-                    </tr>
-                    <tr class="labelCell">
-                      <td>Progress:</td>
+                      <td class="keyColumn">Dataset Status:</td>
                       <td>
                         <xsl:apply-templates mode="render-value" select="mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation"/>
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Access Constraint:</td>
+                      <td class="keyColumn">Progress:</td>
                       <td>
-                        <pre style="{$prestyle}">
-                          <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceConstraints/mco:MD_SecurityConstraints/mco:useLimitation"/>
-                        </pre>
+                        <xsl:apply-templates mode="render-value" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:status/mcc:MD_ProgressCode/@codeListValue"/>
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Data Existence:</td>
+                      <td  class="keyColumn">Access Constraint:</td>
                       <td>
-                        <!-- <xsl:for-each select="mdb:identificationInfo/*/mri:graphicOverview/*">
-                          <div>
-                            <img src="{mcc:fileName/*}" style="max-width: 50%;" />
-                            <p>
-                              <xsl:apply-templates mode="render-value" select="mcc:fileDescription" />
-                            </p>
-                          </div>
-                        </xsl:for-each> -->
-                        <xsl:apply-templates mode="render-field" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_GeographicBoundingBox" />
+                        <div>
+                          <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceConstraints/mco:MD_LegalConstraints/mco:reference/cit:CI_Citation/cit:title"/>
+                          (<a href="{$ccLinkage}" target="blank" >
+                            <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceConstraints/mco:MD_LegalConstraints/mco:reference/cit:CI_Citation/cit:onlineResource/cit:CI_OnlineResource/cit:description"/>
+                          </a>)
+                        </div>
+                        <div>
+                          <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceConstraints/mco:MD_SecurityConstraints/mco:useLimitation"/>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="labelCell">
+                      <td class="keyColumn">Data Existence:</td>
+                      <td>
+                        <!-- <xsl:if test="count(mdb:identificationInfo/*/mri:graphicOverview/*) > 0">
+                          <xsl:for-each select="mdb:identificationInfo/*/mri:graphicOverview/*">
+                            <xsl:variable name="imgUrl">
+                              <xsl:value-of select="mcc:MD_BrowseGraphic/mcc:linkage/cit:CI_OnlineResource/cit:linkage/gco:CharacterString" />
+                            </xsl:variable>
 
+                            <xsl:value-of select="mcc:MD_BrowseGraphic/mcc:linkage/cit:CI_OnlineResource/cit:linkage/gco:CharacterString" />
+                            <xsl:value-of select="mdb:identificationInfo/*/mri:graphicOverview/mcc:MD_BrowseGraphic/mcc:linkage/cit:CI_OnlineResource/cit:linkage/gco:CharacterString" />
+
+                            <div>
+                              <img src="{$imgUrl}" style="max-width: 50%;" />
+                              <p>
+                                <xsl:apply-templates mode="render-value" select="mcc:fileDescription" />
+                              </p>
+                            </div>
+                          </xsl:for-each>
+                        </xsl:if>
+                        <xsl:if test="count(mdb:identificationInfo/*/mri:graphicOverview/*) = 0"> -->
+                          <xsl:apply-templates mode="render-field" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_GeographicBoundingBox" />
+                        <!-- </xsl:if> -->
                       </td>
                     </tr>
                   </table>
@@ -265,35 +301,35 @@
                       <th>Descriptions</th>
                     </tr>
                     <tr class="labelCell">
-                        <td>Resource Name:</td>
+                        <td class="keyColumn">Resource Name:</td>
+                        <td><xsl:value-of select="$altTitle"/></td>
+                      </tr>
+                      <tr class="labelCell">
+                        <td class="keyColumn">Title:</td>
                         <td><xsl:value-of select="$title"/></td>
                       </tr>
                       <tr class="labelCell">
-                        <td>Title:</td>
-                        <td><xsl:value-of select="$title"/></td>
-                      </tr>
-                      <tr class="labelCell">
-                        <td>Anzlic ID:</td>
+                        <td class="keyColumn">Anzlic ID:</td>
                         <td><xsl:value-of select="$id"/></td>
                       </tr>
                       <tr class="labelCell">
-                          <td>Custodian:</td>
+                          <td class="keyColumn">Custodian:</td>
                           <td>
                             <xsl:apply-templates mode="render-value" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:citedResponsibleParty/cit:CI_Responsibility[cit:role/cit:CI_RoleCode/@codeListValue = 'custodian']/cit:party/cit:CI_Organisation/cit:name"/>
                           </td>
                         </tr>
                       <tr class="labelCell">
-                        <td>Owner:</td>
+                        <td class="keyColumn">Owner:</td>
                         <td><xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:citedResponsibleParty/cit:CI_Responsibility[cit:role/cit:CI_RoleCode/@codeListValue = 'owner']/cit:party/cit:CI_Organisation/cit:name"/></td>
                       <tr class="labelCell">
-                          <td>Jurisdiction:</td>
+                          <td class="keyColumn">Jurisdiction:</td>
                           <td>
-                              <td><xsl:apply-templates mode="render-value" select="*//cit:identifier/mcc:MD_Identifier[mcc:description/gco:CharacterString = 'Jurisdiction ID']/mcc:code"/></td>
+                              <xsl:apply-templates mode="render-value" select="*//cit:identifier/mcc:MD_Identifier[mcc:description/gco:CharacterString = 'Jurisdiction ID']/mcc:code"/>
                           </td>
                         </tr>
                       </tr>
                       <tr class="labelCell">
-                        <td>Abstract:</td>
+                        <td class="keyColumn">Abstract:</td>
                         <td>
                           <pre style="{$prestyle}">
                             <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:abstract"/>
@@ -301,7 +337,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <td>Search Words:</td>
+                        <td class="keyColumn">Search Words:</td>
                         <td>
                           <xsl:for-each select="mdb:identificationInfo/mri:MD_DataIdentification//mri:topicCategory">
                             <xsl:apply-templates mode="render-value" select="mri:MD_TopicCategoryCode"/>
@@ -310,19 +346,32 @@
                         </td>
                       </tr>
                       <tr class="labelCell">
-                        <td>Purpose:</td>
+                        <td class="keyColumn">Purpose:</td>
                         <td><pre style="{$prestyle}">
                             <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:purpose"/>
                           </pre></td>
                       </tr>
                       <tr class="labelCell">
-                        <td>Geographic Extent Polygon:</td>
+                        <td class="keyColumn">Geographic Extent Polygon:</td>
                         <td>
+                          <xsl:for-each select="mdb:identificationInfo/*/mri:graphicOverview/*">
+
+                            <xsl:variable name="imgUrl">
+                              <xsl:value-of select="mcc:MD_BrowseGraphic/mcc:linkage/cit:CI_OnlineResource/cit:linkage/gco:CharacterString" />
+                            </xsl:variable>
+
+                            <div>
+                              <img src="{$imgUrl}" style="max-width: 50%;" />
+                              <p>
+                                <xsl:apply-templates mode="render-value" select="mcc:fileDescription" />
+                              </p>
+                            </div>
+                          </xsl:for-each>
                           <xsl:apply-templates mode="render-field" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:geographicElement/gex:EX_GeographicBoundingBox" />
                         </td>
                       </tr>
                       <tr class="labelCell">
-                        <td>Geographic Bounding Box:</td>
+                        <td class="keyColumn">Geographic Bounding Box:</td>
                         <xsl:for-each select="*//gex:geographicElement/gex:EX_GeographicBoundingBox">
                           <xsl:variable name="boxdivstyle">
                             <xsl:text>
@@ -360,39 +409,31 @@
                         </xsl:for-each>
                       </tr>
                     <tr class="labelCell">
-                      <td>Beginning to Ending Date:</td>
+                      <td class="keyColumn">Beginning to Ending Date:</td>
                       <td>
                         <xsl:apply-templates mode="render-field" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod" />
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Maintainence and Update Frequency:</td>
+                      <td class="keyColumn">Maintainence and Update Frequency:</td>
                       <td>
                         <xsl:apply-templates mode="render-value" select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceMaintenance/mmi:MD_MaintenanceInformation/mmi:maintenanceAndUpdateFrequency/mmi:MD_MaintenanceFrequencyCode/@codeListValue" />
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Stored Data Format:</td>
+                      <td class="keyColumn">Stored Data Format:</td>
                       <td>
                         <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title" />
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Available Format(s) Types:</td>
+                      <td class="keyColumn">Available Format(s) Types:</td>
                       <td>
                         <xsl:value-of select="mdb:distributionInfo/mrd:MD_Distribution/mrd:distributionFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title" />
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Lineage:</td>
-                      <td>
-                        <pre style="{$prestyle}">
-                          <xsl:value-of select="mdb:resourceLineage/mrl:LI_Lineage/mrl:statement" />
-                        </pre>
-                      </td>
-                    </tr>
-                    <tr class="labelCell">
-                      <td>Positional Accuracy:</td>
+                      <td class="keyColumn">Positional Accuracy:</td>
                       <td>
                         <pre style="{$prestyle}">
                           <xsl:value-of select="mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_AbsoluteExternalPositionalAccuracy/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
@@ -400,7 +441,7 @@
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Attribute Accuracy:</td>
+                      <td class="keyColumn">Attribute Accuracy:</td>
                       <td>
                         <pre style="{$prestyle}">
                           <xsl:value-of select="mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_NonQuantitativeAttributeCorrectness/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
@@ -408,7 +449,7 @@
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Logical Consistency:</td>
+                      <td class="keyColumn">Logical Consistency:</td>
                       <td>
                         <pre style="{$prestyle}">
                           <xsl:value-of select="mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
@@ -416,7 +457,7 @@
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Data Source:</td>
+                      <td class="keyColumn">Data Source:</td>
                       <td>
                         <pre style="{$prestyle}">
                           <xsl:value-of select="mdb:resourceLineage/mrl:LI_Lineage/mrl:statement" />
@@ -426,19 +467,19 @@
 
 
                     <tr class="labelCell">
-                      <td>Contact Organisation:</td>
+                      <td class="keyColumn">Contact Organisation:</td>
                       <td>
                         <xsl:value-of select="mdb:contact/cit:CI_Responsibility/cit:party/cit:CI_Organisation/cit:name" />
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Contact Position:</td>
+                      <td class="keyColumn">Contact Position:</td>
                       <td>
                         <xsl:value-of select="mdb:contact/cit:CI_Responsibility/cit:party/cit:CI_Organisation/cit:individual/cit:CI_Individual/cit:positionName" />
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Address:</td>
+                      <td class="keyColumn">Address:</td>
                       <td>
                         <xsl:for-each select="mdb:contact/cit:CI_Responsibility/cit:party/cit:CI_Organisation/cit:contactInfo/cit:CI_Contact/cit:address/*">
                           <xsl:apply-templates mode="render-value" select="." /><br />
@@ -446,31 +487,31 @@
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Telephone:</td>
+                      <td class="keyColumn">Telephone:</td>
                       <td>
                         <xsl:apply-templates mode="render-value" select="mdb:contact/cit:CI_Responsibility/cit:party/cit:CI_Organisation/cit:individual/cit:CI_Individual/cit:contactInfo/cit:CI_Contact/cit:phone[cit:CI_Telephone/cit:numberType/cit:CI_TelephoneTypeCode/@codeListValue = 'voice']/cit:CI_Telephone/cit:number" />
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Facsimile:</td>
+                      <td class="keyColumn">Facsimile:</td>
                       <td>
                           <xsl:apply-templates mode="render-value" select="mdb:contact/cit:CI_Responsibility/cit:party/cit:CI_Organisation/cit:individual/cit:CI_Individual/cit:contactInfo/cit:CI_Contact/cit:phone[cit:CI_Telephone/cit:numberType/cit:CI_TelephoneTypeCode/@codeListValue = 'fax']/cit:CI_Telephone/cit:number" />
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Email Address:</td>
+                      <td class="keyColumn">Email Address:</td>
                       <td>
                         <xsl:apply-templates mode="render-value" select="mdb:contact/cit:CI_Responsibility/cit:party/cit:CI_Organisation/cit:individual/cit:CI_Individual/cit:contactInfo/cit:CI_Contact/cit:address/cit:CI_Address/cit:electronicMailAddress" />
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Metadata Date:</td>
+                      <td class="keyColumn">Metadata Date:</td>
                       <td>
                         <xsl:apply-templates mode="render-value" select="mdb:dateInfo/cit:CI_Date/cit:date" />
                       </td>
                     </tr>
                     <tr class="labelCell">
-                      <td>Additional Metadata:</td>
+                      <td class="keyColumn">Additional Metadata:</td>
                       <td>
                           <pre style="{$prestyle}">
                               <xsl:copy-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:supplementalInformation"/>
