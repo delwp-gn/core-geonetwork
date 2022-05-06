@@ -79,18 +79,12 @@
 
   <!-- The core formatter XSL layout based on the editor configuration -->
   <xsl:include href="sharedFormatterDir/xslt/render-layout.xsl"/> 
-  <!-- <xsl:include href="C:/svproject/SV005007_DELWP_Metadata/delwp-gn-core-geonetwork/web/src/main/webapp/WEB-INF/data/data/formatter/xslt/render-layout.xsl"/>  -->
   
   <!-- <xsl:include href="../../../../../data/formatter/xslt/render-layout.xsl"/> -->
 
   <!-- Define the metadata to be loaded for this schema plugin-->
   <xsl:variable name="metadata"
                 select="/root/mdb:MD_Metadata"/>
-  
-  <!-- <xsl:variable name="language"
-                select="'en'"/>
-  <xsl:variable name="schema"
-                select="'iso19115-3.2018'"/> -->
 
   <xsl:variable name="langId" select="gn-fn-iso19115-3.2018:getLangId($metadata, $language)"/>
 
@@ -1337,7 +1331,7 @@
   </xsl:template>
 
   <!-- ... Codelists -->
-  <!-- <xsl:template mode="render-value"
+  <xsl:template mode="render-value"
                 match="@codeListValue">
     <xsl:variable name="id" select="."/>
     <xsl:variable name="codelistTranslation"
@@ -1357,10 +1351,10 @@
         <xsl:value-of select="$id"/>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:template> -->
+  </xsl:template>
 
   <!-- Enumeration -->
-  <!-- <xsl:template mode="render-value"
+  <xsl:template mode="render-value"
                 match="mri:MD_TopicCategoryCode|
                        mex:MD_ObligationCode[1]|
                        msr:MD_PixelOrientationCode[1]|
@@ -1384,7 +1378,7 @@
         <xsl:value-of select="$id"/>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:template> -->
+  </xsl:template>
 
   <xsl:template mode="render-value"
                 match="@gco:nilReason[. = 'withheld']"
