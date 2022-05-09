@@ -940,7 +940,7 @@
       <xsl:if test="count($missingAssocRecords) > 0">
         <h1>Other associated records</h1>
         <xsl:for-each select="$missingAssocRecords">
-          <p>Could not retrieve record for <a href="{.//cit:linkage}" target="blank"><xsl:value-of select=".//cit:title" /></a>.</p>
+          <p>Could not retrieve details for <a href="{.//cit:linkage}" target="blank"><xsl:value-of select=".//cit:title" /></a> - you may be able to view its details online.</p>
         </xsl:for-each>  
       </xsl:if>
      
