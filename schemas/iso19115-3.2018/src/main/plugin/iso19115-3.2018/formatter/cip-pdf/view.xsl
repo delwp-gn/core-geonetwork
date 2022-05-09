@@ -151,6 +151,26 @@
     <xsl:value-of select="translate( concat('http://localhost:8080/geonetwork/srv/eng/csw?request=GetRecords&amp;service=CSW&amp;version=2.0.2&amp;namespace=xmlns%28csw%3Dhttp%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2F2.0.2%29%2Cxmlns%28gmd%3Dhttp%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd%29&amp;constraint=', $query, '&amp;constraintLanguage=CQL_TEXT&amp;constraint_language_version=1.1.0&amp;typeNames=mdb:MD_Metadata&amp;resultType=results&amp;ElementSetName=full&amp;outputSchema=http://standards.iso.org/iso/19115/-3/mdb/2.0'), ' ', '')" />
   </xsl:function>
 
+  <!-- 
+    function to combine an associated resource record and a URL 
+    required so we can pass the URL of the resource linkage through to the child record, and render the template
+  -->
+  <xsl:function name="gn-fn-render:add-url">
+    <!-- made nodeset to be linked -->
+    <xsl:param name="mainNode"/>
+    <!-- URL valuer -->
+    <xsl:param name="url"/>
+
+    <!-- wrap whole set in new element-->
+    <resource>
+      <!-- grab copy of main node -->
+      <xsl:copy-of select="$mainNode"/>
+      <!-- populate new resUrl element with url value -->
+      <resUrl><xsl:copy-of select="$url"/></resUrl>
+    </resource>
+    
+  </xsl:function>
+
   <!-- Create API url for looking up associated records -->
   <xsl:function name="gn-fn-render:APIURL">
     <xsl:param name="uuid"/>
@@ -638,7 +658,8 @@
             <xsl:choose>
               <xsl:when test="$resDoc//delwp:pointCloudDetails">
 
-                  <xsl:apply-templates mode="render-cip-associated-record" select="$resDoc" />
+                <!-- render associated record, and append the resource URL to it so we can link out -->
+                <xsl:apply-templates mode="render-cip-associated-record" select="gn-fn-render:add-url($resDoc, .//cit:linkage)" />
 
               </xsl:when>
             </xsl:choose>
@@ -749,7 +770,8 @@
             <xsl:choose>
               <xsl:when test="$resDoc//delwp:dem">
                 
-                <xsl:apply-templates mode="render-cip-associated-record" select="$resDoc" />
+                <!-- render associated record, and append the resource URL to it so we can link out -->
+                <xsl:apply-templates mode="render-cip-associated-record" select="gn-fn-render:add-url($resDoc, .//cit:linkage)" />
 
               </xsl:when>
             </xsl:choose>
@@ -851,13 +873,15 @@
         </tr>
         <xsl:for-each select="$availableAssocRecords">
 
+            <!-- get document -->
             <xsl:variable name="resDoc" 
               select="document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
             
+            <!-- select out only those with contour records -->
             <xsl:choose>
               <xsl:when test="$resDoc//delwp:contourDetails">
-                
-                <xsl:apply-templates mode="render-cip-associated-record" select="$resDoc" />
+                <!-- render associated record, and append the resource URL to it so we can link out -->
+                <xsl:apply-templates mode="render-cip-associated-record" select="gn-fn-render:add-url($resDoc, .//cit:linkage)" />
               </xsl:when>
             </xsl:choose>
             
@@ -916,7 +940,7 @@
       <xsl:if test="count($missingAssocRecords) > 0">
         <h1>Other associated records</h1>
         <xsl:for-each select="$missingAssocRecords">
-          <p>Could not retrieve record for <a href="{.//cit:linkage}" target="blank"><xsl:value-of select=".//cit:title" /></a>.</p>
+          <p>Could not retrieve details for <a href="{.//cit:linkage}" target="blank"><xsl:value-of select=".//cit:title" /></a> - you may be able to view its details online.</p>
         </xsl:for-each>  
       </xsl:if>
      
@@ -947,16 +971,17 @@
   <xsl:template mode="render-cip-associated-record" match="*">
     <xsl:choose>
       <xsl:when test=".//delwp:contourDetails">
-
+          
           <tr>
             <td>
-              <a href="{.//cit:linkage}" target="blank">
+              <a href="{.//resUrl}" target="blank">
                 <xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title"/>
               </a>
             </td>
-            <td><xsl:value-of select=".//delwp:contourDetails/delwp:MD_ContourDetails/delwp:interval"/></td>
-            <td><xsl:value-of select="$nil"/></td>
-            <td><xsl:value-of select="$nil"/></td>
+            <!-- <td><xsl:value-of select=".//delwp:contourDetails/delwp:MD_ContourDetails/delwp:interval"/></td> -->
+            <td><xsl:apply-templates mode="render-value" select=".//delwp:contourDetails/delwp:MD_ContourDetails/delwp:interval/gco:Measure"/></td>
+            <td><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:distance/gco:Distance"/></td>
+            <td><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:vertical/gco:Distance"/></td>
             <td><xsl:value-of select=".//mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code"/></td>
             <td><xsl:value-of select="$verticalDatum"/></td>
             <td>
@@ -976,7 +1001,7 @@
  
           <tr>
             <td>
-              <a href="{.//cit:linkage}" target="blank">
+              <a href="{.//resUrl}" target="blank">
                 <xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title"/>
               </a>
             </td>
@@ -984,21 +1009,16 @@
               <xsl:for-each select=".//mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties/msr:MD_Dimension">
                 <xsl:choose>
                   <xsl:when test=".//msr:dimensionName/msr:MD_DimensionNameTypeCode/@codeListValue = 'column'">
-                    <xsl:apply-templates select="msr:resolution"/><xsl:value-of select="msr:resolution/gco:Measure/@uom"/> <br />
+                    <span>Column <xsl:apply-templates mode="render-value"  select="msr:resolution/gco:Measure"/></span><br />
                   </xsl:when>
-                </xsl:choose> 
-              </xsl:for-each>
-            </td>
-            <td>
-              <xsl:for-each select=".//mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties/msr:MD_Dimension">
-                <xsl:choose>
                   <xsl:when test="msr:dimensionName/msr:MD_DimensionNameTypeCode/@codeListValue = 'row'">
-                    <xsl:apply-templates select="msr:resolution"/><xsl:value-of select="msr:resolution/gco:Measure/@uom"/>
+                    <span>Row <xsl:apply-templates mode="render-value"  select="msr:resolution/gco:Measure"/></span>
                   </xsl:when>
                 </xsl:choose> 
               </xsl:for-each>
             </td>
-            <td><xsl:value-of select="$nil"/></td>
+            <td><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:distance/gco:Distance"/></td>
+            <td><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:vertical/gco:Distance"/></td>
             <td><xsl:value-of select=".//mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code"/></td>
             <td><xsl:value-of select="$verticalDatum"/></td>
             <td>
@@ -1018,15 +1038,16 @@
     
           <tr>
             <td>
-              <a href="{.//cit:linkage}" target="blank">
+              <a href="{.//resUrl}" target="blank">
                 <xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title"/>
               </a>
             </td>
-            <td><xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:distance"/></td>
-            <td><xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:vertical"/></td>
+            <td><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:distance/gco:Distance"/></td>
             <td>
-              <xsl:value-of select=".//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual" /> 
-              <xsl:value-of select=".//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual/gco:Measure/@uom" />
+              <xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:vertical/gco:Distance"/>
+            </td>
+            <td>
+              <xsl:apply-templates mode="render-value" select=".//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual/gco:Measure"/>
             </td>
             <td><xsl:value-of select=".//mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code"/></td>
             <td><xsl:value-of select="$verticalDatum"/></td>
