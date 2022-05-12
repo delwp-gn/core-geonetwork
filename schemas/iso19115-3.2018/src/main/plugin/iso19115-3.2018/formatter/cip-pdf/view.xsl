@@ -223,7 +223,7 @@
         <xsl:variable name="resDoc" 
         select=" document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
         <xsl:choose>
-          <xsl:when test="$resDoc//delwp:dem">
+          <xsl:when test="$resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM' or $resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
             <xsl:value-of select="concat( position(), ',' ) " />
           </xsl:when>
         </xsl:choose>
@@ -507,7 +507,7 @@
             </xsl:when>
 
             <!-- DEM TEMPLATE -->
-            <xsl:when test="*//delwp:dem">
+            <xsl:when test="*//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM' or .//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
 
               <h2>Digital Elevation Model Details</h2>
               <table>
@@ -768,7 +768,7 @@
               select="document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
             
             <xsl:choose>
-              <xsl:when test="$resDoc//delwp:dem">
+              <xsl:when test="$resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM' or $resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
                 
                 <!-- render associated record, and append the resource URL to it so we can link out -->
                 <xsl:apply-templates mode="render-cip-associated-record" select="gn-fn-render:add-url($resDoc, .//cit:linkage)" />
@@ -997,7 +997,7 @@
           </tr>
 
       </xsl:when>
-      <xsl:when test=".//delwp:dem">
+      <xsl:when test=".//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM' or .//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
  
           <tr>
             <td>
