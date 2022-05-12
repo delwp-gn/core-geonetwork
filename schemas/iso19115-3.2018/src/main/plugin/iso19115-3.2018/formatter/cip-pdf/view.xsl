@@ -407,7 +407,7 @@
             <!-- LIDAR TEMPLATE -->
             <xsl:when test="*//delwp:pointCloudDetails">
               <h2>LiDAR Point Cloud Details</h2>
-              <table>
+              <!-- <table>
                 <tr>
                   <td><strong>Average Point Density:</strong></td>
                   <td>
@@ -444,7 +444,7 @@
                     ???
                   </td>
                 </tr>
-              </table>
+              </table> -->
 
               <hr />
 
@@ -542,6 +542,52 @@
             </xsl:when>
             <xsl:otherwise></xsl:otherwise>
 
+          </xsl:choose>
+
+          <h3>Processing Lineage:</h3>
+          <xsl:choose>
+            <xsl:when test=".//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description or .//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description">
+
+                
+                <pre style="{$prestyle}">
+                  <xsl:apply-templates mode="render-value" select=".//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description"/>
+                </pre>
+                <pre style="{$prestyle}">
+                  <xsl:apply-templates mode="render-value" select=".//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description"/>
+                </pre>
+              
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$missing"/>
+            </xsl:otherwise>
+          </xsl:choose>
+
+          <h3>Logical Consistency:</h3>
+          <xsl:choose>
+            <xsl:when test=".//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
+                
+                <pre style="{$prestyle}">
+                  <xsl:apply-templates mode="render-value" select=".//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
+                </pre>
+
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$missing"/>
+            </xsl:otherwise>
+          </xsl:choose>
+
+          <h3>Completeness:</h3>
+          <xsl:choose>
+            <xsl:when test=".//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
+                
+                <pre style="{$prestyle}">
+              <xsl:apply-templates mode="render-value" select=".//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
+            </pre>
+
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$missing"/>
+            </xsl:otherwise>
           </xsl:choose>
         
         
