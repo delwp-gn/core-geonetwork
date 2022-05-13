@@ -223,7 +223,7 @@
         <xsl:variable name="resDoc" 
         select=" document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
         <xsl:choose>
-          <xsl:when test="$resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM' or $resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
+          <xsl:when test="$resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM'">
             <xsl:value-of select="concat( position(), ',' ) " />
           </xsl:when>
         </xsl:choose>
@@ -270,6 +270,24 @@
 
     <xsl:variable name="contourIndex">
       <xsl:value-of select="number( substring-before($contourExists, ',') )" />
+    </xsl:variable>
+
+    <!-- as above, but for imagery records -->
+    <xsl:variable name="imageryExists">
+      <xsl:for-each select="$availableAssocRecords">
+        <xsl:variable name="resDoc" 
+        select=" document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+        <xsl:choose>
+          <xsl:when test="$resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
+            <xsl:value-of select="concat( position(), ',' ) " />
+          </xsl:when>
+        </xsl:choose>
+        
+      </xsl:for-each>
+    </xsl:variable>
+
+    <xsl:variable name="imageryIndex">
+      <xsl:value-of select="number( substring-before($imageryExists, ',') )" />
     </xsl:variable>
 
     <!-- 
@@ -507,7 +525,7 @@
             </xsl:when>
 
             <!-- DEM TEMPLATE -->
-            <xsl:when test="*//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM' or .//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
+            <xsl:when test=".//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM'">
 
               <h2>Digital Elevation Model Details</h2>
               <table>
@@ -539,6 +557,56 @@
 
               <hr />
 
+            </xsl:when>
+
+            <xsl:when test=".//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
+              <!-- write single set of headers if there are any records -->
+              <h2>Aerial Photography Details</h2>
+
+              <!-- summary table - TBC if this comes from a single child dataset -->
+              <table>
+                <tr>
+                  <td><strong>Sensor Name:</strong></td>
+                  <td><xsl:apply-templates mode="render-value" select=".//mac:instrument/mac:MI_Sensor/mac:citation/cit:CI_Citation/cit:title"/></td>
+                  <td><strong>Number of Bands:</strong></td>
+                  <td><xsl:apply-templates mode="render-value" select=".//delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:numberOfBands"/></td>
+                </tr>
+                <tr>
+                  <td><strong>Stored Data Format:</strong></td>
+                  <td>
+                    <td>
+                      <xsl:choose>
+                        <xsl:when test=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title">
+                          <xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:value-of select="$missing"/>
+                        </xsl:otherwise>
+                      </xsl:choose>
+                    </td>
+                  </td>
+                  <td><strong>Tile Size:</strong></td>
+                  <td><xsl:apply-templates mode="render-value" select=".//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:tileSize/delwp:MD_TileSizeCode/@codeListValue"/></td>
+                </tr>
+              </table>
+
+              <table style="margin-top: 10px; width: 100%;">
+                <tr>
+                  <th>Dataset</th>
+                  <th>Resolution</th>
+                  <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
+                  <th>Vertical Accuracy</th>
+                  <th>
+                    Projection
+                  </th>
+                  <th>Vertical Datum</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                </tr>
+                <xsl:apply-templates mode="render-cip-associated-record" select="." />
+              </table>
+
+              <hr />
             </xsl:when>
             <xsl:otherwise></xsl:otherwise>
 
@@ -589,6 +657,8 @@
               <xsl:value-of select="$missing"/>
             </xsl:otherwise>
           </xsl:choose>
+
+          
         
         
         </xsl:when>
@@ -814,7 +884,7 @@
               select="document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
             
             <xsl:choose>
-              <xsl:when test="$resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM' or $resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
+              <xsl:when test="$resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM'">
                 
                 <!-- render associated record, and append the resource URL to it so we can link out -->
                 <xsl:apply-templates mode="render-cip-associated-record" select="gn-fn-render:add-url($resDoc, .//cit:linkage)" />
@@ -864,6 +934,126 @@
               
               <pre style="{$prestyle}">
                 <xsl:apply-templates mode="render-value" select="$demIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
+              </pre>
+
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <hr />
+      </xsl:if>
+
+      <!-- test if there are any IMAGERY records  -->
+      <xsl:if test="$imageryIndex > 0">
+
+        <xsl:variable name="imageryIndexDoc" 
+          select="document( gn-fn-render:APIURL( ($availableAssocRecords)[ number($imageryIndex) ]/mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+
+        <!-- write single set of headers if there are any records -->
+        <h2>Aerial Photography Details</h2>
+
+        <!-- summary table - TBC if this comes from a single child dataset -->
+        <table>
+          <tr>
+            <td><strong>Sensor Name:</strong></td>
+            <td><xsl:apply-templates mode="render-value" select="$imageryIndexDoc//mac:instrument/mac:MI_Sensor/mac:citation/cit:CI_Citation/cit:title"/></td>
+            <td><strong>Number of Bands:</strong></td>
+            <td><xsl:apply-templates mode="render-value" select="$imageryIndexDoc//delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:numberOfBands"/></td>
+          </tr>
+          <tr>
+            <td><strong>Stored Data Format:</strong></td>
+            <td>
+              <td>
+                <xsl:choose>
+                <xsl:when test="$imageryIndexDoc//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title">
+                  <xsl:value-of select="$imageryIndexDoc//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$missing"/>
+                </xsl:otherwise>
+              </xsl:choose>
+              </td>
+            </td>
+            <td><strong>Tile Size:</strong></td>
+            <td><xsl:apply-templates mode="render-value" select="$imageryIndexDoc//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:tileSize/delwp:MD_TileSizeCode/@codeListValue"/></td>
+          </tr>
+        </table>
+
+        <hr />
+
+        <table style="margin-top: 10px; width: 100%;">
+        <tr>
+          <th>Dataset</th>
+          <th>Resolution</th>
+          <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
+          <th>Vertical Accuracy</th>
+          <th>
+            Projection
+          </th>
+          <th>Vertical Datum</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+        </tr>
+
+        <!-- loop rows to populate table -->
+        <xsl:for-each select="$availableAssocRecords">
+            <!-- fetch xml record -->
+            <xsl:variable name="resDoc" 
+              select="document( gn-fn-render:APIURL(./mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
+            
+            <xsl:choose>
+              <xsl:when test="$resDoc//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
+                
+                <!-- render associated record, and append the resource URL to it so we can link out -->
+                <xsl:apply-templates mode="render-cip-associated-record" select="gn-fn-render:add-url($resDoc, .//cit:linkage)" />
+
+              </xsl:when>
+            </xsl:choose>
+            
+        </xsl:for-each>
+        <!-- close table -->
+        </table>
+
+        <h3>Processing Lineage:</h3>
+        <xsl:choose>
+          <xsl:when test="$imageryIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description or $imageryIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description">
+
+              
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$imageryIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description"/>
+              </pre>
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$imageryIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description"/>
+              </pre>
+            
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <h3>Logical Consistency:</h3>
+        <xsl:choose>
+          <xsl:when test="$imageryIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
+              
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$imageryIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
+              </pre>
+
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$missing"/>
+          </xsl:otherwise>
+        </xsl:choose>
+
+        <h3>Completeness:</h3>
+        <xsl:choose>
+          <xsl:when test="$imageryIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
+              
+              <pre style="{$prestyle}">
+                <xsl:apply-templates mode="render-value" select="$imageryIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation" />
               </pre>
 
           </xsl:when>
@@ -995,7 +1185,7 @@
       </caption> -->
 
 
-      <hr />
+      <!-- <hr /> -->
     
       <div>
         <div style="width: 75%; float: left;">
