@@ -121,7 +121,7 @@
 
   <!-- some reusable strings -->
   <xsl:variable name="nil"><span color="{$warnColour}">No field match / unsure of field mapping</span></xsl:variable>
-  <xsl:variable name="missing"><span color="{$errColour}">Specific info missing from XML</span></xsl:variable>
+  <xsl:variable name="missing"><span color="{$errColour}">N/A</span></xsl:variable>
   <xsl:variable name="redundant"><span>Potentially redundant information</span></xsl:variable>
 
   <xsl:variable name="parentMissing">
@@ -377,7 +377,7 @@
             </td>
           </xsl:when>
           <xsl:otherwise>
-            <td>None extent polygon provided</td>
+            <td></td>
           </xsl:otherwise>
         </xsl:choose>
         <tr>
