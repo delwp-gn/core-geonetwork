@@ -57,7 +57,7 @@
   * render-value taking care of element values (eg. characterString, URL)
 
   3 levels of priority are defined: 100, 50, none
-
+  
   -->
   <xsl:output method="html" version="4.0"
     encoding="UTF-8" indent="yes"/>
@@ -327,30 +327,30 @@
     </xsl:variable>
 
     <!-- Start creating report body -->
-    <div style="font-family: Arial, Helvetica, sans-serif;">
+    <div style="font: sans-serif;">
       
       <!-- report header -->
-      <h1><xsl:value-of select="$title" /></h1>
-      <h3>Vicmap Imagery and Elevation Metadata Report</h3>
+      <h1 style="font: bold 14pt Verdana, Arial, sans-serif;"><xsl:value-of select="$title" /></h1>
+      <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Vicmap Imagery and Elevation Metadata Report</h3>
 
-      <h2>Description</h2>
+      <h2 style="font: bold 12pt Verdana, Arial, sans-serif;">Description</h2>
       <!-- Head section -->
       <table width="100%" class="identification">
         <tr>
           <!-- title -->
-          <td width="30%"><strong>Title:</strong></td>
+          <td width="20%"  style="font: bold 9pt Verdana, Arial, sans-serif;">Title:</td>
           <td><xsl:value-of select="$title"/></td>
         </tr>
         <tr>
           <!-- custodian -->
-          <td><strong>Custodian:</strong></td>
+          <td style="font: bold 9pt Verdana, Arial, sans-serif;">Custodian:</td>
           <td>
             <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:citedResponsibleParty/cit:CI_Responsibility[cit:role/cit:CI_RoleCode/@codeListValue = 'custodian' ]/cit:party/cit:CI_Organisation/cit:name" />
           </td>
         </tr>
         <tr>
           <!-- abstract -->
-          <td style="vertical-align: top;"><strong>Abstract:</strong></td>
+          <td style="vertical-align: top;font: bold 9pt Verdana, Arial, sans-serif;">Abstract:</td>
           <td>
             <pre style="{$prestyle}">
               <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:abstract"/>
@@ -359,7 +359,7 @@
         </tr>
         <tr>
           <!-- extent -->
-          <td><strong>Geographic Extent:</strong></td>
+          <td style="font: bold 9pt Verdana, Arial, sans-serif;">Geographic Extent:</td>
           <td>
             <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:description"/>
           </td>
@@ -382,7 +382,7 @@
         </xsl:choose>
         <tr>
           <!-- jurisdiction -->
-          <td><strong>Jursidiction:</strong></td>
+          <td style="font: bold 9pt Verdana, Arial, sans-serif;">Jurisdiction:</td>
           <td><xsl:value-of select="$jurisdiction"/></td>
         </tr>
       </table>
@@ -401,10 +401,10 @@
       <!-- handle projects -->
       <xsl:choose>
         <xsl:when test="$rawscope = 'project'">
-          <h2>General <xsl:value-of select="$datascope"/> Details</h2>
+          <h2 style="font: bold 12pt Verdana, Arial, sans-serif;">General <xsl:value-of select="$datascope"/> Details</h2>
           <table>
             <tr>
-              <td><strong>Acquisition Date:</strong></td>
+              <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Acquisition Date:</td>
               <td>
                 <span data-gn-humanize-time="{$projMinDate}" data-format="DD MMM YYYY"><xsl:value-of select="$projMinDate" /></span> to 
                 <span data-gn-humanize-time="{$projMaxDate}" data-format="DD MMM YYYY"><xsl:value-of select="$projMaxDate" /></span></td>
@@ -424,57 +424,53 @@
           <xsl:choose>
             <!-- LIDAR TEMPLATE -->
             <xsl:when test="*//delwp:pointCloudDetails">
-              <h2>LiDAR Point Cloud Details</h2>
+              <h2 style="font: bold 12pt Verdana, Arial, sans-serif;">LiDAR Point Cloud Details</h2>
               <!-- <table>
                 <tr>
-                  <td><strong>Average Point Density:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Average Point Density:</td>
                   <td>
                     <xsl:value-of select="*//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual" />
                   </td>
-                  <td><strong>Sensor Name:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Sensor Name:</td>
                   <td>
                     <xsl:value-of select="mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:instrument/mac:MI_Sensor/mac:citation/cit:CI_Citation/cit:title" />
                   </td>
                 </tr>
                 <tr>
-                  <td><strong>Footprint Size:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Footprint Size:</td>
                   <td>
                     <xsl:value-of select="*//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:footprintSize" />
                   </td>
-                  <td><strong>Stored Data Format:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Stored Data Format:</td>
                   <td>
                       <xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat" />
                   </td>
                 </tr>
                 <tr>
-                  <td><strong>Pulse Mode:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Pulse Mode:</td>
                   <td>
                     ???
                   </td>
-                  <td><strong>Classification:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Classification:</td>
                   <td>
                     ???
                   </td>
                 </tr>
                 <tr>
-                  <td><strong>Return Type:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Return Type:</td>
                   <td>
                     ???
                   </td>
                 </tr>
               </table> -->
 
-              <hr />
-
-              <table style="margin-top: 10px; width: 100%;">
+              <table class="cippdftbl"  style="margin-top: 10px; width: 100%;">
                 <tr>
                   <th>Dataset</th>
-                  <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
-                  <th>Vertical Accuracy</th>
+                  <th>Horizontal Acc.<br/>(RMSE 68% Conf.)</th>
+                  <th>Vertical Acc.</th>
                   <th>Average Point Density</th>
-                  <th>
-                    Projection
-                  </th>
+                  <th>Projection</th>
                   <th>Vertical Datum</th>
                   <th>Stored Format</th>
                   <th>Class</th>
@@ -492,27 +488,23 @@
             <!-- CONTOUR TEMPLATE -->
             <xsl:when test="*//delwp:contourDetails">
 
-              <h2>Contour Details</h2>
+              <h2 style="font: bold 12pt Verdana, Arial, sans-serif;">Contour Details</h2>
               <table>
                 <tr>
-                  <td><strong>Stored Data Format:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Stored Data Format:</td>
                   <td>
                     <td><xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title"/></td>
                   </td>
                 </tr>
               </table>
 
-              <hr />
-
-              <table style="margin-top: 10px; width: 100%;">
+              <table class="cippdftbl"  style="width: 100%;">
                 <tr>
                   <th>Dataset</th>
                   <th>Contour Interval</th>
-                  <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
-                  <th>Vertical Accuracy</th>
-                  <th>
-                    Projection
-                  </th>
+                  <th>Horizontal Acc.<br/>(RMSE 68% Conf.)</th>
+                  <th>Vertical Acc.</th>
+                  <th>Projection</th>
                   <th>Vertical Datum</th>
                   <th>Start Date</th>
                   <th>End Date</th>
@@ -527,27 +519,23 @@
             <!-- DEM TEMPLATE -->
             <xsl:when test=".//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM'">
 
-              <h2>Digital Elevation Model Details</h2>
+              <h2 style="font: bold 12pt Verdana, Arial, sans-serif;">Digital Elevation Model Details</h2>
               <table>
                 <tr>
-                  <td><strong>Stored Data Format:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Stored Data Format:</td>
                   <td>
                     <td><xsl:value-of select="mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat/mrd:MD_Format/mrd:formatSpecificationCitation/cit:CI_Citation/cit:title"/></td>
                   </td>
                 </tr>
               </table>
 
-              <hr />
-
-              <table style="margin-top: 10px; width: 100%;">
+              <table class="cippdftbl"  style="margin-top: 10px; width: 100%;">
                 <tr>
                   <th>Dataset</th>
                   <th>Resolution</th>
-                  <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
-                  <th>Vertical Accuracy</th>
-                  <th>
-                    Projection
-                  </th>
+                  <th>Horizontal Acc.<br/>(RMSE 68% Conf.)</th>
+                  <th>Vertical Acc.</th>
+                  <th>Projection</th>
                   <th>Vertical Datum</th>
                   <th>Start Date</th>
                   <th>End Date</th>
@@ -561,18 +549,18 @@
 
             <xsl:when test=".//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
               <!-- write single set of headers if there are any records -->
-              <h2>Aerial Photography Details</h2>
+              <h2 style="font: bold 12pt Verdana, Arial, sans-serif;">Aerial Photography Details</h2>
 
               <!-- summary table - TBC if this comes from a single child dataset -->
               <table>
                 <tr>
-                  <td><strong>Sensor Name:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Sensor Name:</td>
                   <td><xsl:apply-templates mode="render-value" select=".//mac:instrument/mac:MI_Sensor/mac:citation/cit:CI_Citation/cit:title"/></td>
-                  <td><strong>Number of Bands:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Number of Bands:</td>
                   <td><xsl:apply-templates mode="render-value" select=".//delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:numberOfBands"/></td>
                 </tr>
                 <tr>
-                  <td><strong>Stored Data Format:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Stored Data Format:</td>
                   <td>
                     <td>
                       <xsl:choose>
@@ -585,20 +573,18 @@
                       </xsl:choose>
                     </td>
                   </td>
-                  <td><strong>Tile Size:</strong></td>
+                  <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Tile Size:</td>
                   <td><xsl:apply-templates mode="render-value" select=".//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:tileSize/delwp:MD_TileSizeCode/@codeListValue"/></td>
                 </tr>
               </table>
 
-              <table style="margin-top: 10px; width: 100%;">
+              <table class="cippdftbl"  style="margin-top: 10px; width: 100%;">
                 <tr>
                   <th>Dataset</th>
                   <th>Resolution</th>
-                  <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
-                  <th>Vertical Accuracy</th>
-                  <th>
-                    Projection
-                  </th>
+                  <th>Horizontal Acc.<br/>(RMSE 68% Conf.)</th>
+                  <th>Vertical Acc.</th>
+                  <th>Projection</th>
                   <th>Vertical Datum</th>
                   <th>Start Date</th>
                   <th>End Date</th>
@@ -612,7 +598,7 @@
 
           </xsl:choose>
 
-          <h3>Processing Lineage:</h3>
+          <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Processing Lineage:</h3>
           <xsl:choose>
             <xsl:when test=".//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description or .//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description">
 
@@ -630,7 +616,7 @@
             </xsl:otherwise>
           </xsl:choose>
 
-          <h3>Logical Consistency:</h3>
+          <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Logical Consistency:</h3>
           <xsl:choose>
             <xsl:when test=".//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
                 
@@ -644,7 +630,7 @@
             </xsl:otherwise>
           </xsl:choose>
 
-          <h3>Completeness:</h3>
+          <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Completeness:</h3>
           <xsl:choose>
             <xsl:when test=".//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
                 
@@ -676,11 +662,11 @@
           select="document( gn-fn-render:APIURL( ($availableAssocRecords)[ number($pointCloudIndex) ]/mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
 
         <!-- write single set of headers if there are any records -->
-        <h2>LiDAR Point Cloud Details</h2>
+        <h2 style="font: bold 12pt Verdana, Arial, sans-serif;">LiDAR Point Cloud Details</h2>
 
         <!-- <table>
           <tr>
-            <td><strong>Average Point Density:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Average Point Density:</td>
             <td>
               <xsl:choose>
                 <xsl:when test="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pointDensityActual">
@@ -692,7 +678,7 @@
                 </xsl:otherwise>
               </xsl:choose>
             </td>
-            <td><strong>Sensor Name:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Sensor Name:</td>
             <td>
               <xsl:choose>
                 <xsl:when test="$pointCloudIndexDoc//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:instrument/mac:MI_Sensor/mac:citation/cit:CI_Citation/cit:title">
@@ -705,7 +691,7 @@
             </td>
           </tr>
           <tr>
-            <td><strong>Footprint Size:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Footprint Size:</td>
             <td>
               <xsl:choose>
                 <xsl:when test="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:footprintSize">
@@ -717,7 +703,7 @@
                 </xsl:otherwise>
               </xsl:choose>
             </td>
-            <td><strong>Stored Data Format:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Stored Data Format:</td>
             <td>
                 <xsl:choose>
                 <xsl:when test="$pointCloudIndexDoc//mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceFormat">
@@ -730,34 +716,30 @@
             </td>
           </tr>
           <tr>
-            <td><strong>Pulse Mode:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Pulse Mode:</td>
             <td>
               <xsl:value-of select="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pulseMode" />
             </td>
-            <td><strong>Classification:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Classification:</td>
             <td>
               <xsl:value-of select="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:classification/delwp:MD_Classification/delwp:classLevel" />
             </td>
           </tr>
           <tr>
-            <td><strong>Return Type:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Return Type:</td>
             <td>
               <xsl:value-of select="$pointCloudIndexDoc//delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:returnType" />
             </td>
           </tr>
         </table> -->
 
-        <hr />
-
-        <table style="margin-top: 10px; width: 100%;">
+        <table class="cippdftbl"  style="margin-top: 10px; width: 100%;">
         <tr>
           <th>Dataset</th>
-          <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
-          <th>Vertical Accuracy</th>
+          <th>Horizontal Acc.<br/>(RMSE 68% Conf.)</th>
+          <th>Vertical Acc.</th>
           <th>Average Point Density</th>
-          <th>
-            Projection
-          </th>
+          <th>Projection</th>
           <th>Vertical Datum</th>
           <th>Stored Format</th>
           <th>Class</th>
@@ -783,7 +765,7 @@
         </xsl:for-each>
         </table>
 
-        <h3>Processing Lineage:</h3>
+        <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Processing Lineage:</h3>
         <xsl:choose>
           <xsl:when test="$pointCloudIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description or $pointCloudIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description">
 
@@ -801,7 +783,7 @@
           </xsl:otherwise>
         </xsl:choose>
 
-        <h3>Logical Consistency:</h3>
+        <h3  style="font: bold 10pt Verdana, Arial, sans-serif;">Logical Consistency:</h3>
         <xsl:choose>
           <xsl:when test="$pointCloudIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
               
@@ -815,7 +797,7 @@
           </xsl:otherwise>
         </xsl:choose>
 
-        <h3>Completeness:</h3>
+        <h3  style="font: bold 10pt Verdana, Arial, sans-serif;">Completeness:</h3>
         <xsl:choose>
           <xsl:when test="$pointCloudIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
               
@@ -840,12 +822,12 @@
           select="document( gn-fn-render:APIURL( ($availableAssocRecords)[ number($demIndex) ]/mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
 
         <!-- write single set of headers if there are any records -->
-        <h2>Digital Elevation Model Details</h2>
+        <h2 style="font: bold 12pt Verdana, Arial, sans-serif;">Digital Elevation Model Details</h2>
 
         <!-- summary table - TBC if this comes from a single child dataset -->
         <table>
           <tr>
-            <td><strong>Stored Data Format:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Stored Data Format:</td>
             <td>
               <td>
                 <xsl:choose>
@@ -861,17 +843,13 @@
           </tr>
         </table>
 
-        <hr />
-
-        <table style="margin-top: 10px; width: 100%;">
+        <table class="cippdftbl"  style="margin-top: 10px; width: 100%;">
         <tr>
           <th>Dataset</th>
           <th>Resolution</th>
-          <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
-          <th>Vertical Accuracy</th>
-          <th>
-            Projection
-          </th>
+          <th>Horizontal Acc.<br/>(RMSE 68% Conf.)</th>
+          <th>Vertical Acc.</th>
+          <th>Projection</th>
           <th>Vertical Datum</th>
           <th>Start Date</th>
           <th>End Date</th>
@@ -896,7 +874,7 @@
         <!-- close table -->
         </table>
 
-        <h3>Processing Lineage:</h3>
+        <h3  style="font: bold 10pt Verdana, Arial, sans-serif;">Processing Lineage:</h3>
         <xsl:choose>
           <xsl:when test="$demIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description or $demIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description">
 
@@ -914,7 +892,7 @@
           </xsl:otherwise>
         </xsl:choose>
 
-        <h3>Logical Consistency:</h3>
+        <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Logical Consistency:</h3>
         <xsl:choose>
           <xsl:when test="$demIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
               
@@ -928,7 +906,7 @@
           </xsl:otherwise>
         </xsl:choose>
 
-        <h3>Completeness:</h3>
+        <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Completeness:</h3>
         <xsl:choose>
           <xsl:when test="$demIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
               
@@ -952,18 +930,18 @@
           select="document( gn-fn-render:APIURL( ($availableAssocRecords)[ number($imageryIndex) ]/mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
 
         <!-- write single set of headers if there are any records -->
-        <h2>Aerial Photography Details</h2>
+        <h2 style="font: bold 12pt Verdana, Arial, sans-serif;">Aerial Photography Details</h2>
 
         <!-- summary table - TBC if this comes from a single child dataset -->
         <table>
           <tr>
-            <td><strong>Sensor Name:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Sensor Name:</td>
             <td><xsl:apply-templates mode="render-value" select="$imageryIndexDoc//mac:instrument/mac:MI_Sensor/mac:citation/cit:CI_Citation/cit:title"/></td>
-            <td><strong>Number of Bands:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Number of Bands:</td>
             <td><xsl:apply-templates mode="render-value" select="$imageryIndexDoc//delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:numberOfBands"/></td>
           </tr>
           <tr>
-            <td><strong>Stored Data Format:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Stored Data Format:</td>
             <td>
               <td>
                 <xsl:choose>
@@ -976,25 +954,21 @@
               </xsl:choose>
               </td>
             </td>
-            <td><strong>Tile Size:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Tile Size:</td>
             <td><xsl:apply-templates mode="render-value" select="$imageryIndexDoc//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:tileSize/delwp:MD_TileSizeCode/@codeListValue"/></td>
           </tr>
         </table>
 
-        <hr />
-
-        <table style="margin-top: 10px; width: 100%;">
+        <table class="cippdftbl" style="margin-top: 10px; width: 100%;">
         <tr>
-          <th>Dataset</th>
-          <th>Resolution</th>
-          <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
-          <th>Vertical Accuracy</th>
-          <th>
-            Projection
-          </th>
-          <th>Vertical Datum</th>
-          <th>Start Date</th>
-          <th>End Date</th>
+          <th style="vertical-align: top; margin-left: 5px;">Dataset</th>
+          <th style="vertical-align: top">Resolution</th>
+          <th style="vertical-align: top">Horizontal Acc.<br/>(RMSE 68% Conf.)</th>
+          <th style="vertical-align: top">Vertical Acc.</th>
+          <th style="vertical-align: top">Projection</th>
+          <th style="vertical-align: top">Vertical Datum</th>
+          <th style="vertical-align: top">Start Date</th>
+          <th style="vertical-align: top">End Date</th>
         </tr>
 
         <!-- loop rows to populate table -->
@@ -1016,7 +990,7 @@
         <!-- close table -->
         </table>
 
-        <h3>Processing Lineage:</h3>
+        <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Processing Lineage:</h3>
         <xsl:choose>
           <xsl:when test="$imageryIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description or $imageryIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description">
 
@@ -1034,7 +1008,7 @@
           </xsl:otherwise>
         </xsl:choose>
 
-        <h3>Logical Consistency:</h3>
+        <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Logical Consistency:</h3>
         <xsl:choose>
           <xsl:when test="$imageryIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
               
@@ -1048,7 +1022,7 @@
           </xsl:otherwise>
         </xsl:choose>
 
-        <h3>Completeness:</h3>
+        <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Completeness:</h3>
         <xsl:choose>
           <xsl:when test="$imageryIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
               
@@ -1073,10 +1047,10 @@
           select="document( gn-fn-render:APIURL( ($availableAssocRecords)[ number($contourIndex) ]/mri:MD_AssociatedResource/mri:metadataReference/@uuidref ) )" />
 
         <!-- write single set of headers if there are any records -->
-        <h2>Contour Details</h2>
+        <h2 style="font: bold 12pt Verdana, Arial, sans-serif;">Contour Details</h2>
         <table>
           <tr>
-            <td><strong>Stored Data Format:</strong></td>
+            <td  style="font: bold 9pt Verdana, Arial, sans-serif;">Stored Data Format:</td>
             <td>
               <td>
                 <xsl:choose>
@@ -1092,17 +1066,13 @@
           </tr>
         </table>
 
-        <hr />
-
-        <table style="margin-top: 10px; width: 100%;">
+        <table class="cippdftbl" style="margin-top: 10px; width: 100%;">
         <tr>
           <th>Dataset</th>
           <th>Contour Interval</th>
-          <th>Accuracy (RMSE 68% Conf.) Horizontal</th>
-          <th>Vertical Accuracy</th>
-          <th>
-            Projection
-          </th>
+          <th>Horizontal Acc.<br/>(RMSE 68% Conf.)</th>
+          <th>Vertical Acc.</th>
+          <th>Projection</th>
           <th>Vertical Datum</th>
           <th>Start Date</th>
           <th>End Date</th>
@@ -1124,7 +1094,7 @@
         </xsl:for-each>
         </table>
         
-        <h3>Processing Lineage:</h3>
+        <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Processing Lineage:</h3>
         <xsl:choose>
           <xsl:when test="$contourIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:processStep/mrl:LI_ProcessStep/mrl:description or $contourIndexDoc//mdb:resourceLineage/mrl:LI_Lineage/mrl:source/mrl:LI_Source/mrl:description">
 
@@ -1142,7 +1112,7 @@
           </xsl:otherwise>
         </xsl:choose>
 
-        <h3>Logical Consistency:</h3>
+        <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Logical Consistency:</h3>
         <xsl:choose>
           <xsl:when test="$contourIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
               
@@ -1156,7 +1126,7 @@
           </xsl:otherwise>
         </xsl:choose>
 
-        <h3>Completeness:</h3>
+        <h3 style="font: bold 10pt Verdana, Arial, sans-serif;">Completeness:</h3>
         <xsl:choose>
           <xsl:when test="$contourIndexDoc//mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation">
               
@@ -1209,23 +1179,23 @@
       <xsl:when test=".//delwp:contourDetails">
           
           <tr>
-            <td>
+            <td style="vertical-align: top">
               <a href="{.//resUrl}" target="blank">
                 <xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title"/>
               </a>
             </td>
-            <!-- <td><xsl:value-of select=".//delwp:contourDetails/delwp:MD_ContourDetails/delwp:interval"/></td> -->
-            <td><xsl:apply-templates mode="render-value" select=".//delwp:contourDetails/delwp:MD_ContourDetails/delwp:interval/gco:Measure"/></td>
-            <td><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:distance/gco:Distance"/></td>
-            <td><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:vertical/gco:Distance"/></td>
-            <td><xsl:value-of select=".//mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code"/></td>
-            <td><xsl:value-of select="$verticalDatum"/></td>
-            <td>
+            <!-- <td style="vertical-align: top"><xsl:value-of select=".//delwp:contourDetails/delwp:MD_ContourDetails/delwp:interval"/></td> -->
+            <td style="vertical-align: top"><xsl:apply-templates mode="render-value" select=".//delwp:contourDetails/delwp:MD_ContourDetails/delwp:interval/gco:Measure"/></td>
+            <td style="vertical-align: top"><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:distance/gco:Distance"/></td>
+            <td style="vertical-align: top"><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:vertical/gco:Distance"/></td>
+            <td style="vertical-align: top"><xsl:value-of select=".//mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code"/></td>
+            <td style="vertical-align: top"><xsl:value-of select="$verticalDatum"/></td>
+            <td style="vertical-align: top">
               <span data-gn-humanize-time="{.//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition}" data-format="DD MMM YYYY">
                 <xsl:value-of select=".//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition" />
               </span>
             </td>
-            <td>
+            <td style="vertical-align: top">
               <span data-gn-humanize-time="{.//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition}" data-format="DD MMM YYYY">
                 <xsl:value-of select=".//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition" />
               </span>
@@ -1236,12 +1206,12 @@
       <xsl:when test=".//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'DEM' or .//delwp:type/delwp:MD_RasterTypeCode/@codeListValue = 'Aerial Photo'">
  
           <tr>
-            <td>
+            <td style="vertical-align: top">
               <a href="{.//resUrl}" target="blank">
                 <xsl:value-of select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:title"/>
               </a>
             </td>
-            <td>
+            <td style="vertical-align: top">
               <xsl:for-each select=".//mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties/msr:MD_Dimension">
                 <xsl:choose>
                   <xsl:when test=".//msr:dimensionName/msr:MD_DimensionNameTypeCode/@codeListValue = 'column'">
@@ -1253,16 +1223,16 @@
                 </xsl:choose> 
               </xsl:for-each>
             </td>
-            <td><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:distance/gco:Distance"/></td>
-            <td><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:vertical/gco:Distance"/></td>
-            <td><xsl:value-of select=".//mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code"/></td>
-            <td><xsl:value-of select="$verticalDatum"/></td>
-            <td>
+            <td style="vertical-align: top"><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:distance/gco:Distance"/></td>
+            <td style="vertical-align: top"><xsl:apply-templates mode="render-value" select=".//mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialResolution/mri:MD_Resolution/mri:vertical/gco:Distance"/></td>
+            <td style="vertical-align: top"><xsl:value-of select=".//mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code"/></td>
+            <td style="vertical-align: top"><xsl:value-of select="$verticalDatum"/></td>
+            <td style="vertical-align: top">
               <span data-gn-humanize-time="{.//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition}" data-format="DD MMM YYYY">
                 <xsl:value-of select=".//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:beginPosition" />
               </span>
             </td>
-            <td>
+            <td style="vertical-align: top">
               <span data-gn-humanize-time="{.//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition}" data-format="DD MMM YYYY">
                 <xsl:value-of select=".//mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:extent/gex:EX_Extent/gex:temporalElement/gex:EX_TemporalExtent/gex:extent/gml:TimePeriod/gml:endPosition" />
               </span>

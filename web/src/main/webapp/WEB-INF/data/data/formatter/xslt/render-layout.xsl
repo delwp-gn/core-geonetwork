@@ -80,9 +80,16 @@
                   padding:0;
                   height:100%;
                 }
-                
               </style>
-      
+
+              <style type="text/css">
+                body {font: 9pt Verdana, Arial, sans-serif; }
+		.cippdftbl { vertical-align: top;border: solid 1px LightGrey;border-collapse: collapse } 
+		.cippdftbl th { font: bold 7pt Verdana, Arial, sans-serif; background-color: SeaShell;border: solid 1px LightGrey; border-collapse: collapse; padding-left: 5 px !important; } 
+		.cippdftbl td { font: 8pt Verdana, Arial, sans-serif;border: solid 1px LightGrey; border-collapse: collapse; padding-left: 2 em; } 
+		.cippdf h1 {font: bold 12pt Verdana, Arial, sans-serif;}
+              </style>
+
             </head>
             <body>
               <div class="gn-schema-{$schema} container-fluid gn-metadata-view">
