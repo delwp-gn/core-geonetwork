@@ -32,7 +32,7 @@
   <xsl:include href="convert/functions.xsl"/>
   <xsl:include href="layout/utility-fn.xsl"/>
 
-  <xsl:variable name="codelistloc" select="'http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml'"/>
+  <xsl:variable name="codelistloc" select="'https://github.com/geonetwork-delwp/iso19115-3.2018-1/blob/master/codelists.xml'"/>
 
   <xsl:variable name="editorConfig"
                 select="document('layout/config-editor.xml')"/>
@@ -158,7 +158,7 @@
               <gco:DateTime><xsl:value-of select="/root/env/changeDate"/></gco:DateTime>
             </cit:date>
             <cit:dateType>
-              <cit:CI_DateTypeCode codeList="http://standards.iso.org/iso/19115/resources/Codelists/cat/codelists.xml#CI_DateTypeCode" codeListValue="creation"/>
+              <cit:CI_DateTypeCode codeList="{concat($codelistloc,'#CI_DateTypeCode')}" codeListValue="creation"/>
             </cit:dateType>
           </cit:CI_Date>
         </mdb:dateInfo>
@@ -170,7 +170,7 @@
               <gco:DateTime><xsl:value-of select="/root/env/changeDate"/></gco:DateTime>
             </cit:date>
             <cit:dateType>
-              <cit:CI_DateTypeCode codeList="http://standards.iso.org/iso/19115/resources/Codelists/cat/codelists.xml#CI_DateTypeCode" codeListValue="revision"/>
+              <cit:CI_DateTypeCode codeList="{concat($codelistloc,'#CI_DateTypeCode')}" codeListValue="revision"/>
             </cit:dateType>
           </cit:CI_Date>
         </mdb:dateInfo>
@@ -190,7 +190,7 @@
                   <gco:DateTime><xsl:value-of select="/root/env/changeDate"/></gco:DateTime>
                 </cit:date>
                 <cit:dateType>
-                  <cit:CI_DateTypeCode codeList="http://standards.iso.org/iso/19115/resources/Codelists/cat/codelists.xml#CI_DateTypeCode" codeListValue="revision"/>
+                  <cit:CI_DateTypeCode codeList="{concat($codelistloc,'#CI_DateTypeCode')}" codeListValue="revision"/>
                 </cit:dateType>
               </cit:CI_Date>
             </mdb:dateInfo>
@@ -240,7 +240,7 @@
             point of truth for the metadata linkage but this
             needs to be language dependant. -->
             <cit:function>
-              <cit:CI_OnLineFunctionCode codeList="http://standards.iso.org/iso/19115/resources/Codelists/cat/codelists.xml#CI_OnLineFunctionCode"
+              <cit:CI_OnLineFunctionCode codeList="{concat($codelistloc,'#CI_OnLineFunctionCode')}"
                                          codeListValue="completeMetadata"/>
             </cit:function>
           </cit:CI_OnlineResource>
@@ -398,7 +398,7 @@
               <gco:DateTime><xsl:value-of select="/root/env/changeDate"/></gco:DateTime>
             </cit:date>
             <cit:dateType>
-              <cit:CI_DateTypeCode codeList="http://standards.iso.org/iso/19115/resources/Codelists/cat/codelists.xml#CI_DateTypeCode" codeListValue="lastUpdate"/>
+              <cit:CI_DateTypeCode codeList="{concat($codelistloc,'#CI_DateTypeCode')}" codeListValue="lastUpdate"/>
             </cit:dateType>
           </cit:CI_Date>
         </xsl:when>
@@ -611,7 +611,7 @@
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:attribute name="codeList">
-        <xsl:value-of select="concat('http://standards.iso.org/iso/19157/resources/Codelists/cat/codelists.xml#',local-name(.))"/>
+        <xsl:value-of select="concat($codelistloc,'#',local-name(.))"/>
       </xsl:attribute>
     </xsl:copy>
   </xsl:template>
@@ -620,7 +620,7 @@
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:attribute name="codeList">
-        <xsl:value-of select="concat('http://standards.iso.org/iso/19115/resources/Codelists/cat/codelists.xml#',local-name(.))"/>
+        <xsl:value-of select="concat($codelistloc,'#',local-name(.))"/>
       </xsl:attribute>
     </xsl:copy>
   </xsl:template>
