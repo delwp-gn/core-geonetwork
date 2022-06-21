@@ -330,6 +330,16 @@
     <description></description>
     <condition></condition>
   </element>
+  <element name="mrl:description" context="mrl:LI_Source">
+    <label>Source</label>
+    <description></description>
+    <condition></condition>
+  </element>
+  <element name="mrl:description" context="mrl:LI_ProcessStep">
+    <label>Process step</label>
+    <description></description>
+    <condition></condition>
+  </element>
   <element name="mrl:stepDateTime">
     <label>Step date time</label>
     <description></description>

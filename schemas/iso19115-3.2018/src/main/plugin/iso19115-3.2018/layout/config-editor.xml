@@ -256,8 +256,10 @@
     <name>mri:resourceFormat</name>
     <name>mri:spatialResolution</name>
     <name>mri:thesaurusName</name>
+    <!--
     <name>mrl:processStep</name>
     <name>mrl:source</name>
+    -->
     <name>msr:projection</name>
     <name>srv:containsOperations</name>
     <name>srv:SV_CoupledResource</name>
@@ -1575,9 +1577,31 @@
           <!-- Data details common to all rasters -->
           <!-- delwp:type = RasterType -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:type"/>
-          <!--<field name="xPixelResolution" xpath="/mdb:MD_Metadata/mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties[1]/msr:MD_Dimension/msr:resolution"/>-->
+          <!-- Add x pixel and y pixel resolution -->
+          <field name="xPixelResolution" xpath="/mdb:MD_Metadata/mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties[1]/msr:MD_Dimension/msr:resolution"/>
+          <action type="add" name="xPixelResolution" or="resolution" if="count(mdb:MD_Metadata/mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties[1]/msr:MD_Dimension/msr:resolution)=0" in="mdb:MD_Metadata/mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties[1]/msr:MD_Dimension">
+            <template>
+              <snippet>
+                <msr:resolution>
+                  <gco:Measure uom="cm"/>
+                </msr:resolution>
+              </snippet>
+            </template>
+          </action>
+
           <!--<field name="columns" xpath="/mdb:MD_Metadata/mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties[1]/msr:MD_Dimension/msr:dimensionSize"/>-->
-          <!--<field name="yPixelResolution" xpath="/mdb:MD_Metadata/mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties[2]/msr:MD_Dimension/msr:resolution"/>-->
+
+          <field name="yPixelResolution" xpath="/mdb:MD_Metadata/mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties[2]/msr:MD_Dimension/msr:resolution"/>
+          <action type="add" name="yPixelResolution" or="resolution" if="count(mdb:MD_Metadata/mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties[2]/msr:MD_Dimension/msr:resolution)=0" in="mdb:MD_Metadata/mdb:spatialRepresentationInfo/msr:MD_GridSpatialRepresentation/msr:axisDimensionProperties[2]/msr:MD_Dimension">
+            <template>
+              <snippet>
+                <msr:resolution>
+                  <gco:Measure uom="cm"/>
+                </msr:resolution>
+              </snippet>
+            </template>
+          </action>
+
           <!--<field name="rows" xpath="/mdb:MD_Metadata/mdb:spatialRepresentationInfo/msr:MD_GridSpatialResolution/msr:axisDimensionProperties[2]/msr:MD_Dimension/msr:dimensionSize"/>-->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:seamlessness" or="seamlessness" in="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails"/>
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:numberOfBands"/>
@@ -1849,6 +1873,7 @@
 				<for name="cit:CI_Individual"/>
 				<for name="cit:CI_Organisation"/>
 				<for name="mrl:LI_Lineage"/>
+        <for name="msr:resolution"/>
       </flatModeExceptions>
     </view>
 

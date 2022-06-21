@@ -9,7 +9,7 @@
   <mdb:metadataScope>
     <mdb:MD_MetadataScope>
       <mdb:resourceScope>
-        <mcc:MD_ScopeCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#MD_ScopeCode" codeListValue="dataset" />
+        <mcc:MD_ScopeCode codeList="codeListLocation#MD_ScopeCode" codeListValue="dataset" />
       </mdb:resourceScope>
     </mdb:MD_MetadataScope>
   </mdb:metadataScope>
@@ -27,7 +27,7 @@
         <gco:Date>2003-12-08</gco:Date>
       </cit:date>
       <cit:dateType>
-        <cit:CI_DateTypeCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#CI_DateTypeCode" codeListValue="revision" />
+        <cit:CI_DateTypeCode codeList="codeListLocation#CI_DateTypeCode" codeListValue="revision" />
       </cit:dateType>
     </cit:CI_Date>
   </mdb:dateInfo>
@@ -50,7 +50,7 @@
             <gco:Date>2019-05-24</gco:Date>
           </cit:date>
           <cit:dateType>
-            <cit:CI_DateTypeCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#CI_DateTypeCode" codeListValue="creation" />
+            <cit:CI_DateTypeCode codeList="codeListLocation#CI_DateTypeCode" codeListValue="creation" />
           </cit:dateType>
         </cit:CI_Date>
       </cit:date>
@@ -63,7 +63,7 @@
       <cit:citedResponsibleParty>
         <cit:CI_Responsibility>
           <cit:role>
-            <cit:CI_RoleCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#CI_RoleCode" codeListValue="owner" />
+            <cit:CI_RoleCode codeList="codeListLocation#CI_RoleCode" codeListValue="owner" />
           </cit:role>
           <cit:party xlink:href="local://srv/api/registries/entries/urn:delwp:metashare:person:-1_person_organisation" />
         </cit:CI_Responsibility>
@@ -91,13 +91,13 @@
       <mri:pointOfContact>
         <cit:CI_Responsibility>
           <cit:role>
-            <cit:CI_RoleCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#CI_RoleCode" codeListValue="pointOfContact" />
+            <cit:CI_RoleCode codeList="codeListLocation#CI_RoleCode" codeListValue="pointOfContact" />
           </cit:role>
           <cit:party xlink:href="local://srv/api/registries/entries/urn:delwp:metashare:person:-1_person_organisation" />
         </cit:CI_Responsibility>
       </mri:pointOfContact>
       <mri:spatialRepresentationType>
-        <mcc:MD_SpatialRepresentationTypeCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector" />
+        <mcc:MD_SpatialRepresentationTypeCode codeList="codeListLocation#MD_SpatialRepresentationTypeCode" codeListValue="vector" />
       </mri:spatialRepresentationType>
       <mri:topicCategory>
         <mri:MD_TopicCategoryCode>environment</mri:MD_TopicCategoryCode>
@@ -135,7 +135,7 @@
       <mri:resourceMaintenance>
         <mmi:MD_MaintenanceInformation>
           <mmi:maintenanceAndUpdateFrequency>
-            <mmi:MD_MaintenanceFrequencyCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#MD_MaintenanceFrequencyCode" codeListValue="" />
+            <mmi:MD_MaintenanceFrequencyCode codeList="codeListLocation#MD_MaintenanceFrequencyCode" codeListValue="" />
           </mmi:maintenanceAndUpdateFrequency>
         </mmi:MD_MaintenanceInformation>
       </mri:resourceMaintenance>
@@ -145,17 +145,17 @@
             <gco:CharacterString>Unknown</gco:CharacterString>
           </mco:useLimitation>
           <mco:classification>
-            <mco:MD_ClassificationCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#MD_ClassificationCode" codeListValue="unknown" />
+            <mco:MD_ClassificationCode codeList="codeListLocation#MD_ClassificationCode" codeListValue="unknown" />
           </mco:classification>
         </mco:MD_SecurityConstraints>
       </mri:resourceConstraints>
       <mri:defaultLocale>
         <lan:PT_Locale>
           <lan:language>
-            <lan:LanguageCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#LanguageCode" codeListValue="eng" />
+            <lan:LanguageCode codeList="codeListLocation#LanguageCode" codeListValue="eng" />
           </lan:language>
           <lan:characterEncoding>
-            <lan:MD_CharacterSetCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#MD_CharacterSetCode" codeListValue="utf8" />
+            <lan:MD_CharacterSetCode codeList="codeListLocation#MD_CharacterSetCode" codeListValue="utf8" />
           </lan:characterEncoding>
         </lan:PT_Locale>
       </mri:defaultLocale>
@@ -198,7 +198,7 @@
       <mdq:scope>
         <mcc:MD_Scope>
           <mcc:level>
-            <mcc:MD_ScopeCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#MD_ScopeCode" codeListValue="dataset" />
+            <mcc:MD_ScopeCode codeList="codeListLocation#MD_ScopeCode" codeListValue="dataset" />
           </mcc:level>
         </mcc:MD_Scope>
       </mdq:scope>
@@ -215,7 +215,7 @@
         <gco:CharacterString>Unknown</gco:CharacterString>
       </mco:useLimitation>
       <mco:classification>
-        <mco:MD_ClassificationCode codeList="http://standards.iso.org/iso/19115/resources/Codelist/cat/codelists.xml#MD_ClassificationCode" codeListValue="unknown" />
+        <mco:MD_ClassificationCode codeList="codeListLocation#MD_ClassificationCode" codeListValue="unknown" />
       </mco:classification>
     </mco:MD_SecurityConstraints>
   </mdb:metadataConstraints>
