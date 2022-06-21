@@ -256,8 +256,10 @@
     <name>mri:resourceFormat</name>
     <name>mri:spatialResolution</name>
     <name>mri:thesaurusName</name>
+    <!--
     <name>mrl:processStep</name>
     <name>mrl:source</name>
+    -->
     <name>msr:projection</name>
     <name>srv:containsOperations</name>
     <name>srv:SV_CoupledResource</name>
