@@ -150,8 +150,8 @@
   <projectPartnerPurpose>Purpose</projectPartnerPurpose>
   <yearOfAcquisition>Year (eg. 2008-9)</yearOfAcquisition>
 
-  <xPixelResolution>X Pixel Resolution</xPixelResolution>
-  <yPixelResolution>Y Pixel Resolution</yPixelResolution>
+  <xPixelResolution>X Pixel Resolution (cm)</xPixelResolution>
+  <yPixelResolution>Y Pixel Resolution (cm)</yPixelResolution>
   <columns>Number Columns</columns>
   <rows>Number Rows</rows>
 
