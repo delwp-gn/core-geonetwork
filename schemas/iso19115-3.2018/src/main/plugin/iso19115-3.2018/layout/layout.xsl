@@ -253,7 +253,7 @@
 
     <!-- For some fields, always display attributes.
     TODO: move to editor config ? -->
-    <xsl:variable name="forceDisplayAttributes" select="count(gcx:Anchor) > 0"/>
+    <xsl:variable name="forceDisplayAttributes" select="count(gcx:Anchor) > 0 or count(gco:Measure) > 0"/>
 
     <xsl:variable name="monoLingualValue"
                   select="gco:CharacterString|gcx:Anchor|gco:Integer|gco:Decimal|
