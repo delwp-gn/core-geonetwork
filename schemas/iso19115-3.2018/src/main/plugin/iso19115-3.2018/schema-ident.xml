@@ -15,7 +15,7 @@ Metadata Profile of ISO19115-3 (2018) for Victorian Government Department of Env
   <!-- FIXME: add all required schemas -->
   <schemaLocation>http://standards.iso.org/iso/19115/-3/mds/2.0 http://standards.iso.org/iso/19115/-3/mds/2.0/mds.xsd</schemaLocation>
   <autodetect xmlns:cit="http://standards.iso.org/iso/19115/-3/cit/2.0"
-              xmlns:mac="http://standards.iso.org/iso/19115/-3/mac/2.0" 
+              xmlns:mac="http://standards.iso.org/iso/19115/-3/mac/2.0"
               xmlns:mcc="http://standards.iso.org/iso/19115/-3/mcc/1.0"
               xmlns:mco="http://standards.iso.org/iso/19115/-3/mco/1.0"
               xmlns:mdb="http://standards.iso.org/iso/19115/-3/mdb/2.0"
@@ -72,7 +72,7 @@ Metadata Profile of ISO19115-3 (2018) for Victorian Government Department of Env
     preserved but with no content in.
     -->
     <filter xpath=".//*[@gco:nilReason='withheld']"
-            ifNotOperation="editing">
+            ifNotOperation="authenticated">
       <keepMarkedElement gco:nilReason="withheld"/>
     </filter>
 
