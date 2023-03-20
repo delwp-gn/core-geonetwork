@@ -288,19 +288,19 @@
           <xsl:copy-of select="gn-fn-iso19115-3.2018:index-field('projectid', ., $langId)"/>
           <xsl:copy-of select="gn-fn-iso19115-3.2018:index-field('databaseid', ., $langId, true(), true())"/>
         </xsl:for-each>
- 
+
         <!-- Add vsdl schema as a separate field -->
         <xsl:for-each select="cit:identifier/mcc:MD_Identifier[contains(mcc:description/gco:CharacterString,'VSDL')]/mcc:code">
           <xsl:copy-of select="gn-fn-iso19115-3.2018:index-field('vsdlschema', ., $langId)"/>
         </xsl:for-each>
- 
+
         <!-- Add metashare jurisdiction as a separate field -->
         <xsl:for-each select="cit:identifier/mcc:MD_Identifier[contains(mcc:description/gco:CharacterString,'Jurisdiction')]/mcc:code">
           <xsl:copy-of select="gn-fn-iso19115-3.2018:index-field('jurisdiction', ., $langId)"/>
         </xsl:for-each>
 
-         <!-- Add DELWP resource owner - selects org of first owner, because some have additional owner  -->                      
-        <xsl:for-each select="cit:citedResponsibleParty[cit:CI_Responsibility/cit:role/cit:CI_RoleCode/@codeListValue = 'owner']/cit:CI_Responsibility/cit:party/cit:CI_Organisation/cit:name">  
+         <!-- Add DELWP resource owner - selects org of first owner, because some have additional owner  -->
+        <xsl:for-each select="cit:citedResponsibleParty[cit:CI_Responsibility/cit:role/cit:CI_RoleCode/@codeListValue = 'owner']/cit:CI_Responsibility/cit:party/cit:CI_Organisation/cit:name">
           <xsl:copy-of select="gn-fn-iso19115-3.2018:index-field('resOwner', ., $langId, true(), true())"/>
         </xsl:for-each>
         <!-- END DELWP Addition -->
@@ -679,7 +679,7 @@
 
         <!-- DELWP Addition -->
         <!-- Add separate field for DELWP res constraints - not indexed -->
-        <xsl:for-each select="mco:classification">                                                     
+        <xsl:for-each select="mco:classification">
           <xsl:copy-of select="gn-fn-iso19115-3.2018:index-field('resClassification', mco:MD_ClassificationCode/@codeListValue, $langId
 , true(), false())"/>
         </xsl:for-each>
@@ -720,9 +720,9 @@
     </xsl:for-each>
 
     <!-- DELWP Addition -->
-    <!-- Add DELWP grid resolution -->                                                                             
-    <xsl:for-each select="$metadata/mdb:spatialRepresentationInfo//msr:MD_Dimension">                                                                                     
-      
+    <!-- Add DELWP grid resolution -->
+    <xsl:for-each select="$metadata/mdb:spatialRepresentationInfo//msr:MD_Dimension">
+
       <xsl:choose>
         <!-- handle row resolution -->
         <xsl:when test="msr:dimensionName/msr:MD_DimensionNameTypeCode/@codeListValue = 'row'">
@@ -745,7 +745,7 @@
           <!-- <xsl:copy-of select="gn-fn-iso19115-3.2018:index-field('columnResolution', $columnResolution, $langId, true(), true())"/> -->
         </xsl:when>
       </xsl:choose>
-    </xsl:for-each>   
+    </xsl:for-each>
 
     <!-- Add DELWP LiDAR fields to index -->
     <xsl:for-each select="$metadata/mdb:acquisitionInformation//delwp:MD_PointCloudDetails">
@@ -754,7 +754,7 @@
       <xsl:variable name="footprintVal" select="string(delwp:footprintSize/*)"/>
       <xsl:variable name="footprintUom" select="string(delwp:footprintSize/*/@uom)"/>
       <Field name="footprintSize" string="{concat($footprintVal, $footprintUom)}" store="true" index="false"/>
-      
+
       <!-- get pointDensityTarget -->
       <xsl:variable name="pointDensityTargetVal" select="string(delwp:pointDensityTarget/*)"/>
       <xsl:variable name="pointDensityTargetUom" select="string(delwp:pointDensityTarget/*/@uom)"/>
@@ -775,14 +775,14 @@
       <xsl:variable name="pointSpacingActualUom" select="string(delwp:pointSpacingActual/*/@uom)"/>
       <Field name="pointSpacingActual" string="{concat($pointSpacingActualVal, $pointSpacingActualUom)}" store="true" index="false"/>
 
-    </xsl:for-each> 
-    
-    <!-- Add DELWP metadata constraints - not indexed -->                                                                                           
-    <xsl:for-each select="$metadata/mdb:metadataConstraints/*">                                                                                     
-      <xsl:for-each select="mco:classification">                                                                                                    
+    </xsl:for-each>
+
+    <!-- Add DELWP metadata constraints - not indexed -->
+    <xsl:for-each select="$metadata/mdb:metadataConstraints/*">
+      <xsl:for-each select="mco:classification">
         <xsl:copy-of select="gn-fn-iso19115-3.2018:index-field('mdClassification', mco:MD_ClassificationCode/@codeListValue, $langId, true(), true())"/>
-      </xsl:for-each>                                                                                                                               
-    </xsl:for-each>    
+      </xsl:for-each>
+    </xsl:for-each>
     <!-- END DELWP Addition -->
 
     <xsl:for-each select="$metadata/mdb:distributionInfo/mrd:MD_Distribution">
@@ -940,11 +940,11 @@
         <xsl:if test="count($attributes) > 0">
           "attributeTable" : [
           <xsl:for-each select="$attributes">
-            {"name": "<xsl:apply-templates mode="localised" 
-                  select="*/gfc:memberName"><xsl:with-param name="langId" 
+            {"name": "<xsl:apply-templates mode="localised"
+                  select="*/gfc:memberName"><xsl:with-param name="langId"
                   select="concat('#', $langId)"/></xsl:apply-templates>",
-            "definition": "<xsl:apply-templates mode="localised" 
-                  select="*/gfc:definition"><xsl:with-param name="langId" 
+            "definition": "<xsl:apply-templates mode="localised"
+                  select="*/gfc:definition"><xsl:with-param name="langId"
                   select="concat('#', $langId)"/></xsl:apply-templates>",
             "code": "<xsl:value-of select="*/gfc:code/*/text()"/>",
             "link": "<xsl:value-of select="*/gfc:code/*/@xlink:href"/>",
@@ -952,12 +952,12 @@
             <xsl:if test="*/gfc:listedValue">
               ,"values": [
               <xsl:for-each select="*/gfc:listedValue">{
-                "label": "<xsl:apply-templates mode="localised" 
-                  select="*/gfc:label"><xsl:with-param name="langId" 
+                "label": "<xsl:apply-templates mode="localised"
+                  select="*/gfc:label"><xsl:with-param name="langId"
                   select="concat('#', $langId)"/></xsl:apply-templates>",
                 "code": "<xsl:value-of select="*/gfc:code/*/text()"/>",
-                "definition": "<xsl:apply-templates mode="localised" 
-                  select="*/gfc:definition"><xsl:with-param name="langId" 
+                "definition": "<xsl:apply-templates mode="localised"
+                  select="*/gfc:definition"><xsl:with-param name="langId"
                   select="concat('#', $langId)"/></xsl:apply-templates>"
                 }
                 <xsl:if test="position() != last()">,</xsl:if>
@@ -1254,6 +1254,13 @@
            store="false"
            index="true"/>
 
+    <xsl:variable name="withheld"
+                  select="if ($type = 'metadata')
+                          then '|nilReasonWithheld'
+                          else if ($role != 'pointOfContact')
+                          then '|nilReasonWithheld'
+                          else ''" />
+
     <Field name="{$fieldPrefix}"
            string="{concat($roleTranslation, '|',
                            $type, '|',
@@ -1266,7 +1273,7 @@
                            string-join($phones, ','), '|',
                            $uuid, '|',
                            $position, '|',
-                           $website)}"
+                           $website, $withheld)}"
            store="true" index="false"/>
 
     <xsl:for-each select="$email">
