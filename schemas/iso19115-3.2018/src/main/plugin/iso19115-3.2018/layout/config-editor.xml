@@ -433,6 +433,7 @@
           <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:purpose" or="purpose" in="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification"/>
           <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:credit" or="credit" in="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification"/>
           <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:supplementalInformation" or="supplementalInformation" in="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification"/>
+          <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:status"/>
 				</section>
 			</tab>
 
@@ -484,7 +485,7 @@
               </snippet>
             </template>
           </action>
-       
+
 
         	<field xpath="/mdb:MD_Metadata/mdb:referenceSystemInfo/mrs:MD_ReferenceSystem/mrs:referenceSystemIdentifier/mcc:MD_Identifier/mcc:code" del="../../../.."/>
           <!-- show the add reference system info directive only if there
@@ -616,7 +617,7 @@
           <!-- TODO: allow creative commons license to be picked -->
 				</section>
 			</tab>
- 
+
       <tab id="resourceLineage" mode="flat">
         <section>
           <field xpath="/mdb:MD_Metadata/mdb:resourceLineage/mrl:LI_Lineage/mrl:statement" or="statement" in="/mdb:MD_Metadata/mdb:resourceLineage/mrl:LI_Lineage"/>
@@ -667,15 +668,15 @@
           <field xpath="/mdb:MD_Metadata/mdb:metadataConstraints/mco:MD_SecurityConstraints/mco:classification"/>
 				</section>
 			</tab>
- 
+
       <!-- dataQuality: DQ_NonQuantitativeAttributeCorrectness, DQ_AbsoluteExternalPositionalAccuracy, DQ_ConceptualConsistency, DQ_CompletenessOmission, DQ_CompletenessCommission -->
 
       <tab id="dataQuality" mode="flat">
         <section>
 
           <!-- DQ_NonQuantitativeAttributeCorrectness -->
-          <field name="nonQuantitativeAttributeCorrectness" templateModeOnly="true" 
-                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_NonQuantitativeAttributeCorrectness/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]" 
+          <field name="nonQuantitativeAttributeCorrectness" templateModeOnly="true"
+                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_NonQuantitativeAttributeCorrectness/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]"
                  if="count(mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_NonQuantitativeAttributeCorrectness/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0" del="../..">
             <template>
               <values>
@@ -738,8 +739,8 @@
           </action>
 
           <!-- DQ_AbsoluteExternalPositionalAccuracy -->
-          <field name="absoluteExternalPositionalAccuracy" templateModeOnly="true" 
-                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_AbsoluteExternalPositionalAccuracy/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]" 
+          <field name="absoluteExternalPositionalAccuracy" templateModeOnly="true"
+                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_AbsoluteExternalPositionalAccuracy/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]"
                  if="count(mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_AbsoluteExternalPositionalAccuracy/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0" del="../..">
             <template>
               <values>
@@ -802,8 +803,8 @@
           </action>
 
           <!-- DQ_ConceptualConsistency -->
-          <field name="conceptualConsistency" templateModeOnly="true" 
-                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]" 
+          <field name="conceptualConsistency" templateModeOnly="true"
+                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]"
                  if="count(mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0" del="../..">
             <template>
               <values>
@@ -866,8 +867,8 @@
           </action>
 
           <!-- DQ_CompletenessOmission -->
-          <field name="completenessOmission" templateModeOnly="true" 
-                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]" 
+          <field name="completenessOmission" templateModeOnly="true"
+                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]"
                  if="count(mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0" del="../..">
             <template>
               <values>
@@ -930,8 +931,8 @@
           </action>
 
           <!-- DQ_CompletenessCommission -->
-          <field name="completenessCommission" templateModeOnly="true" 
-                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessCommission/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]" 
+          <field name="completenessCommission" templateModeOnly="true"
+                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessCommission/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]"
                  if="count(mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessCommission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0" del="../..">
             <template>
               <values>
@@ -1038,6 +1039,7 @@
           <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:purpose" or="purpose" in="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification"/>
           <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:credit" or="credit" in="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification"/>
           <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:supplementalInformation" or="supplementalInformation" in="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification"/>
+          <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:status"/>
 				</section>
 			</tab>
 
@@ -1237,8 +1239,8 @@
         <section>
 
           <!-- DQ_NonQuantitativeAttributeCorrectness -->
-          <field name="nonQuantitativeAttributeCorrectness" templateModeOnly="true" 
-                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_NonQuantitativeAttributeCorrectness/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]" 
+          <field name="nonQuantitativeAttributeCorrectness" templateModeOnly="true"
+                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_NonQuantitativeAttributeCorrectness/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]"
                  if="count(mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_NonQuantitativeAttributeCorrectness/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0" del="../..">
             <template>
               <values>
@@ -1301,8 +1303,8 @@
           </action>
 
           <!-- DQ_AbsoluteExternalPositionalAccuracy -->
-          <field name="absoluteExternalPositionalAccuracy" templateModeOnly="true" 
-                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_AbsoluteExternalPositionalAccuracy/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]" 
+          <field name="absoluteExternalPositionalAccuracy" templateModeOnly="true"
+                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_AbsoluteExternalPositionalAccuracy/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]"
                  if="count(mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_AbsoluteExternalPositionalAccuracy/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0" del="../..">
             <template>
               <values>
@@ -1365,8 +1367,8 @@
           </action>
 
           <!-- DQ_ConceptualConsistency -->
-          <field name="conceptualConsistency" templateModeOnly="true" 
-                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]" 
+          <field name="conceptualConsistency" templateModeOnly="true"
+                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]"
                  if="count(mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_ConceptualConsistency/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0" del="../..">
             <template>
               <values>
@@ -1429,8 +1431,8 @@
           </action>
 
           <!-- DQ_CompletenessOmission -->
-          <field name="completenessOmission" templateModeOnly="true" 
-                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]" 
+          <field name="completenessOmission" templateModeOnly="true"
+                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]"
                  if="count(mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessOmission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0" del="../..">
             <template>
               <values>
@@ -1493,8 +1495,8 @@
           </action>
 
           <!-- DQ_CompletenessCommission -->
-          <field name="completenessCommission" templateModeOnly="true" 
-                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessCommission/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]" 
+          <field name="completenessCommission" templateModeOnly="true"
+                 xpath="/mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessCommission/mdq:result[count(mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0]"
                  if="count(mdb:MD_Metadata/mdb:dataQualityInfo/mdq:DQ_DataQuality/mdq:report/mdq:DQ_CompletenessCommission/mdq:result/mdq:DQ_ConformanceResult/mdq:explanation/gco:CharacterString)>0" del="../..">
             <template>
               <values>
@@ -1623,7 +1625,7 @@
             <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:aerialPhoto/delwp:MD_AerialPhoto/delwp:filmNumber" or="filmNumber" in="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty//gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:aerialPhoto/delwp:MD_AerialPhoto"/>
             <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:aerialPhoto/delwp:MD_AerialPhoto/delwp:lens" or="lens" in="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty//gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:aerialPhoto/delwp:MD_AerialPhoto"/>
 				  </section>
-  
+
           <!-- Satellite raster type details -->
           <section displayIfRecord="count(mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:type/delwp:MD_RasterTypeCode[@codeListValue='Satellite']) > 0">
             <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:satellite/delwp:MD_Satellite/delwp:nadir" or="nadir" in="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:satellite/delwp:MD_Satellite"/>
@@ -1632,13 +1634,13 @@
             <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:satellite/delwp:MD_Satellite/delwp:atmosphericCorrection" or="atmosphericCorrection" in="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:satellite/delwp:MD_Satellite"/>
             <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:satellite/delwp:MD_Satellite/delwp:processingLevel" or="processingLevel" in="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:satellite/delwp:MD_Satellite"/>
 				  </section>
-  
+
           <!-- DEM raster type details -->
           <section displayIfRecord="count(mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:type/delwp:MD_RasterTypeCode[@codeListValue='Digital Surface Model' or @codeListValue='DEM']) > 0">
             <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:dem/delwp:MD_DEM/delwp:demCreator" or="demCreator" in="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties//delwp:dem/delwp:MD_DEM"/>
 				  </section>
 			</tab>
-  
+
       <!-- PointCloud (LiDAR) data details -->
       <tab id="pointCloudDataDetails" mode="flat" displayIfRecord="count(mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:spatialRepresentationType/mcc:MD_SpatialRepresentationTypeCode[@codeListValue='pointCloud']) > 0">
         <section>
@@ -1808,7 +1810,7 @@
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails//delwp:contourDetails/delwp:MD_ContourDetails/delwp:interval"/>
 				</section>
 			</tab>
-      
+
       <!-- Survey details -->
       <tab id="surveyDetails" mode="flat">
         <section>
@@ -1905,6 +1907,7 @@
           </action>
           <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:abstract"/>
           <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:purpose"/>
+          <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:status"/>
 				</section>
 			</tab>
 
@@ -1926,7 +1929,7 @@
           <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceConstraints/mco:MD_SecurityConstraints/mco:classification"/>
 				</section>
 			</tab>
- 
+
       <tab id="projectExtents" mode="flat">
         <section>
           <field xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent/gex:description" or="description" in="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:extent/gex:EX_Extent"/>
@@ -1941,7 +1944,7 @@
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:description"/>
           <!-- mac:method = rastermeta Method -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record//delwp:projectDetails/delwp:MD_ProjectDetails/delwp:method"/>
-					<!-- offer a cit:identifier for schedule number aka RFQ Number--> 
+					<!-- offer a cit:identifier for schedule number aka RFQ Number-->
           <field name="projectScheduleNumber" templateModeOnly="true" xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:citation/cit:CI_Citation/cit:identifier[mcc:MD_Identifier/mcc:description/gco:CharacterString='ScheduleNumber']" del=".">
             <template>
               <values>
@@ -1994,7 +1997,7 @@
           <field xpath="/mdb:MD_Metadata/mdb:metadataConstraints/mco:MD_SecurityConstraints/mco:classification"/>
 				</section>
 			</tab>
- 
+
       <!-- Elements that should not use the "flat" mode -->
       <flatModeExceptions>
         <for name="delwp:projectPartner"/>
@@ -2119,7 +2122,7 @@
           <field name="contractNumber" xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:citation/cit:CI_Citation/cit:identifier/mcc:MD_Identifier[mcc:description/gco:CharacterString='ContractNumber']/mcc:code"/>
           <field name="scheduleNumber" xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:citation/cit:CI_Citation/cit:identifier/mcc:MD_Identifier[mcc:description/gco:CharacterString='ScheduleNumber']/mcc:code"/>
           <field name="supplier" xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:citation/cit:CI_Citation/cit:citedResponsibleParty"/>
-          <!-- DEFAULT 
+          <!-- DEFAULT
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:projectDetails/delwp:MD_ProjectDetails"/>
           -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:projectDetails/delwp:MD_ProjectDetails/delwp:method"/>
@@ -2138,19 +2141,19 @@
 (count(mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:scope/mcc:MD_Scope/mcc:level/mcc:MD_ScopeCode[@codeListValue='dataset']) > 0)
 ">
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:status"/>
-          <!-- DEFAULT 
+          <!-- DEFAULT
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails"/>
           -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:assembly"/>
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:tileSize"/>
-          <!-- cloudCoverPercentage? probably should be with instrument and acquisition 
+          <!-- cloudCoverPercentage? probably should be with instrument and acquisition
                date in survey data section? -->
           <field xpath="/mdb:MD_Metadata/mdb:contentInfo/mrc:MD_ImageDescription/mrc:cloudCoverPercentage"/>
         </section>
 
         <section name="acquisitionRasterDetails" displayIfRecord="
 (count(mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails) > 0)">
-          <!-- DEFAULT 
+          <!-- DEFAULT
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails"/>
           -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:numberOfBands"/>
@@ -2164,7 +2167,7 @@
 
         <section name="acquisitionAerialPhotoDetails" displayIfRecord="
 (count(mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties/delwp:aerialPhoto/delwp:MD_AerialPhoto) > 0)">
-          <!-- DEFAULT 
+          <!-- DEFAULT
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties/delwp:aerialPhoto/delwp:MD_AerialPhoto"/>
           -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties/delwp:aerialPhoto/delwp:MD_AerialPhoto/delwp:photoType"/>
@@ -2174,7 +2177,7 @@
 
         <section name="acquisitionSatelliteDetails" displayIfRecord="
 (count(mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties/delwp:satellite/delwp:MD_Satellite) > 0)">
-          <!-- DEFAULT 
+          <!-- DEFAULT
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties/delwp:satellite/delwp:MD_Satellite"/>
           -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties/delwp:satellite/delwp:MD_Satellite/delwp:nadir"/>
@@ -2188,7 +2191,7 @@
 
         <section name="acquisitionDEMDetails" displayIfRecord="
 (count(mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties/delwp:dem/delwp:MD_DEM) > 0)">
-          <!-- DEFAULT 
+          <!-- DEFAULT
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties/delwp:dem/delwp:MD_DEM"/>
           -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:rasterDetails/delwp:MD_RasterDetails/delwp:rasterTypeSpecificProperties/delwp:MD_RasterTypeSpecificProperties/delwp:dem/delwp:MD_DEM/delwp:demCreator"/>
@@ -2196,7 +2199,7 @@
 
         <section name="acquisitionPointCloudDetails" displayIfRecord="
 (count(mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:pointCloudDetails/delwp:MD_PointCloudDetails) > 0)">
-          <!-- DEFAULT 
+          <!-- DEFAULT
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:pointCloudDetails/delwp:MD_PointCloudDetails"/>
           -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:pointCloudDetails/delwp:MD_PointCloudDetails/delwp:pulseMode"/>
@@ -2222,7 +2225,7 @@
         <section name="acquisitionContourDetails" displayIfRecord="
 (count(mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:contourDetails/delwp:MD_ContourDetails) > 0)
           ">
-          <!-- DEFAULT 
+          <!-- DEFAULT
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:contourDetails/delwp:MD_ContourDetails"/>
           -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:dataDetails/delwp:MD_DataDetails/delwp:contourDetails/delwp:MD_ContourDetails/delwp:interval"/>
@@ -2230,7 +2233,7 @@
 
         <section name="aerialSurveyDetails" displayIfRecord="
 (count(mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:surveyDetails/delwp:MD_SurveyDetails/delwp:aerialSurveyDetails/delwp:MD_AerialSurveyDetails) > 0)">
-          <!-- DEFAULT 
+          <!-- DEFAULT
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:surveyDetails/delwp:MD_SurveyDetails/delwp:aerialSurveyDetails/delwp:MD_AerialSurveyDetails"/>
           -->
           <field xpath="/mdb:MD_Metadata/mdb:acquisitionInformation/mac:MI_AcquisitionInformation/mac:operation/mac:MI_Operation/mac:otherProperty/gco:Record/delwp:datasetDetails/delwp:MD_DatasetDetails/delwp:surveyDetails/delwp:MD_SurveyDetails/delwp:aerialSurveyDetails/delwp:MD_AerialSurveyDetails/delwp:runs"/>
