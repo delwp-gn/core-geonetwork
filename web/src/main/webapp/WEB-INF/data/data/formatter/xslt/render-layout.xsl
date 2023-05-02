@@ -24,7 +24,7 @@
   <xsl:template mode="getOverviews" match="*"/>
   <xsl:template mode="getMetadataThumbnail" match="*"/>
   <xsl:template mode="getMetadataHeader" match="*"/>
-  
+
   <xsl:template mode="renderExport" match="*">
         <!-- Can be overridden by templates in schema plugin -->
         <!-- Render complete HTML page -->
@@ -63,14 +63,14 @@
           <html>
             <head>
               <title>View Metadata</title>
-              
+
               <!-- import css files directly -->
               <style type="text/css">
-                <xsl:value-of select="replace( unparsed-text('https://services.land.vic.gov.au/SpatialDatamart/layoutResources/styles/formstyle.css', 'iso-8859-1'), '[&#xD;&#xA;]+', '' )"/>
-                <xsl:value-of select="replace( unparsed-text('https://services.land.vic.gov.au/SpatialDatamart/layoutResources/styles/layout.css', 'iso-8859-1'), '[&#xD;&#xA;]+', '' )"/>
-                <xsl:value-of select="replace( unparsed-text('https://services.land.vic.gov.au/SpatialDatamart/styles/text.css', 'iso-8859-1'), '[&#xD;&#xA;]+', '' )"/>
-                <xsl:value-of select="replace( unparsed-text('https://services.land.vic.gov.au/SpatialDatamart/styles/application.css', 'iso-8859-1'), '[&#xD;&#xA;]+', '' )"/>
-                <xsl:value-of select="replace( unparsed-text('https://services.land.vic.gov.au/SpatialDatamart/scripts/yahoo/tabview/assets/skins/sam/tabview.css', 'iso-8859-1'), '[&#xD;&#xA;]+', '' )"/>
+                <xsl:value-of select="replace( unparsed-text(concat(/root/gui/url, '/static/formstyle.css'), 'iso-8859-1'), '[&#xD;&#xA;]+', '' )"/>
+                <xsl:value-of select="replace( unparsed-text(concat(/root/gui/url, '/static/layout.css'), 'iso-8859-1'), '[&#xD;&#xA;]+', '' )"/>
+                <xsl:value-of select="replace( unparsed-text(concat(/root/gui/url, '/static/text.css'), 'iso-8859-1'), '[&#xD;&#xA;]+', '' )"/>
+                <xsl:value-of select="replace( unparsed-text(concat(/root/gui/url, '/static/application.css'), 'iso-8859-1'), '[&#xD;&#xA;]+', '' )"/>
+                <xsl:value-of select="replace( unparsed-text(concat(/root/gui/url, '/static/tabview.css'), 'iso-8859-1'), '[&#xD;&#xA;]+', '' )"/>
               </style>
 
               <style type="text/css">
@@ -84,9 +84,9 @@
 
               <style type="text/css">
                 body {font: 9pt Verdana, Arial, sans-serif; }
-		.cippdftbl { vertical-align: top;border: solid 1px LightGrey;border-collapse: collapse } 
-		.cippdftbl th { font: bold 7pt Verdana, Arial, sans-serif; background-color: SeaShell;border: solid 1px LightGrey; border-collapse: collapse; padding-left: 5 px !important; } 
-		.cippdftbl td { font: 8pt Verdana, Arial, sans-serif;border: solid 1px LightGrey; border-collapse: collapse; padding-left: 2 em; } 
+		.cippdftbl { vertical-align: top;border: solid 1px LightGrey;border-collapse: collapse }
+		.cippdftbl th { font: bold 7pt Verdana, Arial, sans-serif; background-color: SeaShell;border: solid 1px LightGrey; border-collapse: collapse; padding-left: 5 px !important; }
+		.cippdftbl td { font: 8pt Verdana, Arial, sans-serif;border: solid 1px LightGrey; border-collapse: collapse; padding-left: 2 em; }
 		.cippdf h1 {font: bold 12pt Verdana, Arial, sans-serif;}
               </style>
 
@@ -375,7 +375,7 @@
         <xsl:if test="@name">
           <xsl:variable name="title"
                         select="gn-fn-render:get-schema-strings($schemaStrings, @name)"/>
-  
+
           <xsl:element name="h{3 + count(ancestor-or-self::*[name(.) = 'section'])}">
             <xsl:attribute name="class" select="'view-header'"/>
             <xsl:value-of select="$title"/>

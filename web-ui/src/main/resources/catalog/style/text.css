@@ -1,0 +1,65 @@
+/* Stylkesheet for all basic text and font settings */
+
+body {
+    width: 100%;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+    font: 8pt/16pt verdana, tahoma, arial, sans-serif;
+}
+
+form {
+	margin: 0px;
+}
+
+h1, h2, h3, h4, h5, h6, p, strong, div, form, acronym, label, table, td, th, span, a, hr, code, pre, hr {
+	background-repeat:no-repeat;
+}
+
+h1, h2, h3, h4, h5, h6, strong, th{
+   font-family: Trebuchet MS, Arial, Tahoma;
+}
+
+p, #content, #supportingText {
+    font: 8pt/14pt Verdana, sans-serif;
+}
+
+hr {
+	background-color:#dddddd;
+}
+
+h1 { color:#003763 ; margin-top: 5px; font-size: 18pt; }
+h2 { color:#003763; }
+
+a:link, a:visited, a:hover, a:active {
+    font: 11px verdana, tahoma, arial, sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+    color: #444444;
+}
+
+a:visited {
+    color: #666666;
+}
+
+a:hover, a:active {
+    color: #b8c271;
+}
+
+.helpPanel {
+   background-color: #f3f6fb;
+	border: 1px solid #a6b4db;
+	height: 100px;
+	position: absolute;
+   width: 250px;
+   visibility: hidden;
+   z-index: 2;
+}
+
+.helpTrigger{
+	float: right;
+	cursor: pointer;
+}
+
+ul.panelTabs li.tab a {
+display:inline;
+}
