@@ -1,0 +1,130 @@
+select.singleSelect, select.multiSelect, input.inputField, input.dateField, input.timeField, textarea {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 11px;;
+	color: #575038;
+	border: 1px solid #a99886;
+	
+}
+
+
+select.singleSelect {
+	vertical-align: middle;
+	width: 99%;
+	max-width: 99%;
+}
+
+select.multiSelect {
+	vertical-align: middle;
+	width: 99%;
+	max-width: 99%;
+}
+
+
+input.inputField {
+	vertical-align: middle;
+	padding: 1px;
+	width: 98%;
+}
+
+input.dateField {
+	vertical-align: middle;
+	padding: 1px;
+	width: 85px;
+}
+
+input.timeField {
+	vertical-align: middle;
+	padding: 1px;
+	width: 20px;
+}
+
+
+textarea {
+	width: 97%;
+	padding: 1px;
+}
+
+
+p.textarea {
+	margin: 5px 5px 5px 10px;
+}
+
+.radiobutton {
+	vertical-align: middle;
+	background: transparent;
+}
+
+
+
+.fieldLayout td.labelRight {
+	width: 20%;
+	text-align: right;
+}
+
+.mandatory {
+	background: #e5edf5;
+}
+
+ .disabled {
+   color: #575038;
+   background-color: #eee;
+}
+
+/* must be after disabled class to override the background colour */
+.checkbox {
+	vertical-align: middle;
+	background: transparent;
+}
+
+
+label, span.fieldLabel, div.fieldLabel {
+	padding-left: 10px;
+	display: block;
+}
+
+.labelRight label, .labelRight span.fieldLabel, div.fieldLabel {
+	float: right;	
+}
+
+label.mandatory, span.mandatory, div.mandatory {
+	background-color: transparent;
+	background-image: url(../images/bullet_mandatory.gif);
+	background-position: 0px 6px;
+	background-repeat: no-repeat;
+	border: 0px;
+}
+
+label.error, span.error, div.error  {
+	color: #a31b31 !important;
+	font-weight: bold;
+}
+
+label.disabled, span.disabled, div.disabled {
+	color: #AFACA0 !important; /*AB made labels greay when disabled */
+	background: url();
+	background-color: transparent;
+	font-weight: normal;
+}
+
+span.displayField {
+	background: url();
+}
+
+button { 
+	-moz-border-radius: 5px;
+}
+
+button.fullWidth {
+	width: 100%;
+}
+
+button.disabled {
+	color: #fff;
+	background: #ccc;
+	border: 1px solid #cfcfcf;
+}
+
+button.disabled:hover {
+	cursor: default;
+}
+

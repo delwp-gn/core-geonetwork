@@ -1,0 +1,780 @@
+#header {
+	margin: 0px;
+	padding: 0px;
+	color: #eeeeee;
+	background: #0a3b76 url(../images/datasearch-bg.png) 0 0;
+}
+
+#bannerTop {
+	height: 124px;
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+
+#bannerBottom {
+	border-bottom: 1px solid #A6B1BF;
+	vertical-align: top;
+	clear: both;
+	height:40px;
+	background:#0f4990;
+	border-top:1px solid #286caf;
+}
+
+#appHeading {
+	font-size: 14px;
+	font-family: Arial, Trebuchet MS, Tahoma;
+	font-weight: bold;
+	color: #eeeeee;
+	padding: 0px 0px 0px 3px;
+	float: left;
+	margin-top:13px;
+}
+
+#appHeadingUserWelcome {
+	font-size: 14px;
+	font-family: Arial, Trebuchet MS, Tahoma;
+	font-weight: normal;
+	color: #eeeeee;
+	padding: 0px 0px 0px 20px;
+}
+
+#dataSearch{
+	float:left;
+	padding:30px 0 0 15px;
+}
+
+#dataVic{
+	float:right;
+	padding:45px 40px 0 0;
+}
+
+#vicGov {
+	border: 0px;
+	margin: 0px;
+	float:right;
+	padding:45px 40px 0 0;
+}
+
+#landVic {
+	float: right;
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+
+#dataVic{
+	float:right;
+	padding:45px 40px 0 0;
+}
+
+#topNav {
+	float: right;
+}
+
+ul#siteLinks li a,
+ul#siteLinks li a:visited{
+	font-size:14px !important;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight:normal !important;
+	padding-right:30px !important;
+}
+
+ul#siteLinks {
+	position: relative;;
+	list-style: none;
+	font-size:14px;
+	margin-top:13px;
+}
+
+ul#siteLinks li {
+	float: left;
+	padding-right: 3px;
+}
+
+#siteLinks li a:link,#siteLinks li a:visited {
+	color: #eeeeee;
+	padding-right: 3px;
+}
+
+#siteLinks li a:hover {
+	color: #cccccc;
+}
+
+#main {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border-collapse:collapse;
+	cellpadding: 0px;
+	cellspacing: 0px;
+	border-spacing: 0;
+}
+
+#navbar {
+	width:150px;
+	background-color: #f3f6fb;
+	border-right: 1px solid #a6b4db;
+	/*border-bottom: 1px solid #a6b4db;*/
+	line-height:17px;
+/* Again, the ugly brilliant hack. */
+	voice-family: "\"}\"";
+	voice-family:inherit;
+	font: 12px arial, sans-serif;
+	vertical-align:top;
+	}
+/* Again, "be nice to Opera 5". */
+body>#navbar {width:170px;}
+
+
+#content {
+	vertical-align:top;
+	margin:0px 0px 0px 220px;
+	padding:10px;
+}
+
+#footer {
+	text-align: center;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	height: 44px;
+	border-top: 1px solid #a6b4db;
+}
+
+/* #########################################
+   Navigation style
+   #########################################*/
+#nav,#nav ul {
+	padding: 0px;
+	margin: 0 0 0 0;
+	list-style: none;
+	float: left;
+	width: 99%;
+}
+
+#nav li {
+	position: relative;
+	float: left;
+	line-height: 1.8em;
+	margin-bottom: -1px;
+	width: 95%;
+	padding: 0px 0px 1px 0px;
+}
+
+#nav li a {
+	line-height: 1.8em;
+	width: 100%;
+	display: block;
+	color: #000000;
+	font-weight: normal;
+	text-decoration: none;
+	background-color: #eaeaf8;
+	border: 1px solid #c3d3e3;
+	border-top: 1px solid #ffffff;
+	border-right: 1px;
+	padding: 2px 3px 2px 6px;
+}
+
+#nav li a:hover {
+	color: #000000;
+	padding-left: 4px;
+	padding-right: 3px;
+	background-color: #f3f6fb;
+	border-left: 3px solid #c07300;
+	border-right: 1px solid #7684ab;
+	width: 100%;
+	z-index: 9999;
+}
+
+.mainSearchLayoutTable {
+	width: 100%;
+}
+
+.mainSearchLayoutTable td {
+	vertical-align: top;
+}
+
+.searchFormTable, .createOrderTable {
+	width: 350px;
+	vertical-align: top;
+	border-collapse: collapse;
+}
+
+.searchFormTable td {
+	padding-bottom: 5px;
+}
+
+.searchWhatWhereTable{
+	width: 330px;
+	vertical-align: top;
+	border: 1px solid #BBBBBB;
+}
+
+.searchWhatWhereTable th {
+	padding: 0px;
+	width: 20px;               /*  was 70 px  */
+}
+
+.searchWhereWhatHeading {
+	font: 12pt Arial;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+td.sdmSearchElement, td.sdmSearchElement input {
+	width: 270px;               /*  was 200 px  */
+}
+
+td.sdmSearchHelpColumn {
+	width: 70px;
+	vertical-align: top;
+}
+
+td#sdmSearchPreview {
+	width: 65px;
+}
+
+td#sdmProceedOrder {
+	width: 65px;
+}
+
+div#sdmSearchProviderFilter {
+	/* float: right; */
+	text-align: left;
+}
+
+div#sdmSearchTypeFilter {
+	text-align: left;
+}
+
+div#sdmSearchOrderableFilter {
+	text-align: left;
+}
+
+button#sdmSearchPreviewButton {
+	float: right;
+}
+
+button#sdmProceedOrderButton {
+	float: right;
+}
+
+.defaultButton {
+	font: 9pt Arial;
+	font-family: Arial;
+}
+
+.attentionMessage {
+	font: 10px arial, sans-serif;
+	font-family: Arial, sans-serif;;
+	color:#003366;
+	font-weight: bold;
+}
+
+.orderFormTable {
+	width: 700px;
+}
+
+.orderFormTable tr th {
+	padding: 0px;
+	width: 100px;
+	text-align: right;
+}
+
+/* style for list tables */
+table.listTable, div.listTable table {
+	border: 1px solid #bbbbbb;
+	/*border-collapse: collapse;*/
+	/*width: 100%;*/
+	margin-top: 10px;
+}
+
+table.listTable td, div.listTable table td {
+	padding: 2px 3px 2px 3px;
+}
+
+table.listTable td.labelCell{
+	font-weight: bold;
+	width: 200px;
+	vertical-align: top;
+}
+
+table.listTable th.sorted {
+	background-color: #a9b8c7;
+}
+
+table.listTable th.sorted a,table.listTable th.sortable a {
+	background-position: right;
+	display: block;
+	width: 100%;
+	background-repeat: no-repeat;
+}
+
+table.listTable th.sortable a {
+	background-image: url(../images/arrow_off.png);
+}
+
+table.listTable th.order1 a {
+	background-image: url(../images/arrow_down.png);
+}
+
+table.listTable th.order2 a {
+	background-image: url(../images/arrow_up.png);
+}
+
+table.listTable th, div.listTable table th{
+	background-color: #899BE5;
+	padding: 3px;
+	border: 1px solid #aaaaaa;
+	text-align: left;
+}
+
+table.listTable tr.even, div.listTable table tr.yui-dt-even {
+	background: #e2e7eb;
+	border-top: 1px solid silver;
+}
+
+table.listTable tr.odd, div.listTable table tr.yui-dt-odd {
+	background: #f9fbfd;
+	border-top: 1px solid silver;
+}
+
+table.listTable tr.footer {
+	background: #b9c7d5;
+}
+
+div.listTable span.yui-dt-selected {
+   font-weight: bold;
+}
+
+div.listTable img {
+   border: none;
+}
+
+div.listTable .yui-dt-col-infoLink {
+	width: 3%;
+}
+
+div.listTable td.yui-dt-col-infoLink {
+	vertical-align: top;
+	text-align: center;
+}
+
+div.listTable .yui-dt-col-title {
+   width: 15%;
+}
+
+div.listTable td.yui-dt-col-title {
+   vertical-align: top;
+}
+
+div.listTable td.yui-dt-col-abstract {
+   vertical-align: top;
+}
+
+div.listTable .yui-dt-col-extractionProvider {
+   width: 6%;
+}
+
+div.listTable td.yui-dt-col-extractionProvider {
+   vertical-align: top;
+}
+
+div.listTable .yui-dt-col-provider {
+   width: 8%;
+}
+
+div.listTable td.yui-dt-col-provider {
+   vertical-align: top;
+}
+
+div.listTable .yui-dt-col-previewCheckbox {
+	width: 6%;
+}
+
+div.listTable td.yui-dt-col-previewCheckbox {
+	vertical-align: top;
+	text-align: center;
+}
+
+div.listTable .yui-dt-col-orderCheckbox {
+	width: 6%;
+}
+
+div.listTable td.yui-dt-col-orderCheckbox {
+	vertical-align: top;
+	text-align: center;
+}
+
+
+.twoCol {
+	width: 45%;
+	float: left;
+}
+
+.oneCol {
+	margin: 20px 0 0 0;
+	width: 100%;
+	clear: both;
+}
+
+#buttonHolder {
+	clear: both;
+	text-align: right;
+}
+
+#buttonHolder button {
+	margin: 0 10PX 0 0;
+}
+
+#one .threeCol {
+	width: 150px;
+	float: left;
+	font-weight: bold;
+}
+
+#two .threeCol {
+	width: 230px;
+	float: left;
+}
+
+#three .threeCol {
+	width: 230px;
+	float: left;
+}
+
+table.createOrderTable td.col1 {
+	width: 150px;
+}
+table.createOrderTable th.col1 {
+	width: 150px;
+	text-align: left;
+}
+table.createOrderTable td.col2 {
+	width: 230px;
+}
+table.createOrderTable th.col2 {
+	width: 230px;
+}
+table.createOrderTable td.col3 {
+	width: 20px;
+}
+table.createOrderTable th.col3 {
+	width: 20px;
+	text-align: left;
+}
+
+
+table.productAccess td.col1 {
+	width: 350px;
+	vertical-align: top;
+}
+
+table.productAccess td.col2 {
+	width: 600px;
+	vertical-align: top;
+	padding-left: 60px;
+}
+
+#one .labelsChangeOrder {
+	width: 150px;
+	float: left;
+	font-weight: bold;
+	margin-left: 10px;
+	vertical-align: top;
+}
+
+#titleOne .twoCol {
+	width: 150px;
+	float: left;
+	font-weight: bold;
+}
+
+#titleTwo .twoCol {
+	width: 590px;
+	float: left;
+}
+
+ul.controlHolder {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+ul.controlHolder li {
+	height: 20px;
+	padding: 3px;
+	vertical-align: top;
+}
+
+ul.controlHolder li.tall {
+	height: 30px;
+}
+
+#two .threeCol ul.controlHolder li.productTitle {
+	height: 30px;
+	font-weight: bold;
+	background-color: #ffdada;
+	width: 600px;
+}
+
+.oneCol button {
+	margin: 0 15px 0 0;
+}
+
+#orgCustCol select {
+	width: 60%;
+}
+
+#productCol select {
+	width: 100%;
+	height: 300px;
+}
+
+.productSelect {
+	overflow: scroll;
+}
+
+.index {
+	width: 800px;
+}
+
+input.error,select.error {
+	background-color: #ffdada;
+}
+
+/*
+#messageHolder {
+	width:185px;
+	background:#FFFFFF;
+	position:absolute;
+	top:300px;
+	left:0px;
+}
+
+ul.errors {
+	list-style:disc;
+	margin:5px;
+	color:#a31b31;
+	font-weight:bold;
+	}
+	*/
+label.bold {
+	font-weight: bold;
+}
+
+table.productDescriptionLink {
+	border: 0px;
+	/*border-collapse: collapse;*/
+	margin-top: 10px;
+	width: 750px;
+}
+
+table.productDescriptionLink td.col1 {
+	width: 25%;
+}
+
+table.productDescriptionLink td.col2 {
+	width: 75%;
+}
+
+table.categoryManagement {
+	border: 0px;
+	/*border-collapse: collapse;*/
+	margin-top: 10px;
+	width: 750px;
+}
+
+table.categoryManagement td.col1 {
+	width: 25%;
+}
+
+table.categoryManagement td.col2 {
+	width: 75%;
+}
+
+/* This is the style for the informational messages presented to the user */
+div.error,div.message {
+	background: #ffc;
+	border: 1px solid green;
+	color: black;
+	font-weight: normal;
+	/*margin: 10px auto;*/
+	padding: 2px;
+	padding-left: 4px;
+	text-align: left;
+	vertical-align: bottom;
+	width: 60%;
+}
+
+div.warning {
+        background: #ffe0b0;
+        border: 1px solid red;
+        color: black;
+        font-weight: normal;
+        /*margin: 10px auto;*/
+        padding: 2px;
+        padding-left: 4px;
+        text-align: left;
+        vertical-align: bottom;
+        width: 60%;
+}
+
+
+div.error ul,div.message ul {
+	margin: 0;
+	list-style: none;
+	padding: 0;
+}
+
+div.message ul li {
+	padding-left: 10px;
+	background-image: url(../images/success_bullet.gif);
+	background-repeat: no-repeat;
+	background-position: 0px 3px;
+}
+
+div.error ul li {
+	padding-left: 10px;
+	background-image: url(../images/error_bullet.gif);
+	background-repeat: no-repeat;
+	background-position: 0px 3px;
+}
+
+/* use a different color for the errors */
+div.error {
+	border: 1px solid #c07300;
+}
+
+.errors {
+	left: 0px;
+	text-align: left;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	width: 60%;
+	background: #ffc;
+	border: 1px solid #c07300;
+	color: black;
+	font-weight: normal;
+	vertical-align: bottom;
+	list-style: none;
+}
+
+.errors li {
+	margin-left: 0px;
+	padding: 0px;
+	padding-left: 15px;
+	background-image: url(../images/error_bullet.gif);
+	background-repeat: no-repeat;
+	background-position: 0px 3px;
+}
+
+/* style for geo Bounding Box table */
+table.geoBoundingBoxTable {
+	cellpadding: 0px;
+	cellspacing: 0px;
+	border-spacing: 0pt;
+	width: 110px;
+	height: 80px
+}
+
+table.geoBoundingBoxTable td {
+	padding: 0px 0px 0px 0px;
+}
+
+table.geoBoundingBoxTable td.geoBoundingBoxLatMin {
+	text-align: center;
+}
+
+table.geoBoundingBoxTable td.geoBoundingBoxLatMax {
+	text-align: center;
+}
+
+table.geoBoundingBoxTable td.geoBoundingBoxLongMin {
+	text-align: center;
+}
+
+table.geoBoundingBoxTable td.geoBoundingBoxLongMax {
+	text-align: center;
+}
+
+td.geoExtentPolygon {
+
+}
+
+table#metashareSearch {
+   margin-top: 0px;
+}
+
+img.checkbox {
+	margin: 3px 3px 3px 4px;
+}
+
+/* ##### Tab Style #### */
+ul.panelTabs {
+   margin-bottom: 0px;
+   left: -40px !important;
+   left: 0px;
+}
+ul.panelTabs li a:hover {
+   font-weight: bold;
+}
+
+ul.panelTabs li {
+	background-color: #6696c3;
+}
+
+ul.panelTabs li.current {
+	background-color: #003366;
+}
+
+#tabBarSubBar {
+   margin-top: 0px;
+   background: #003366;
+   border-right: 1px solid #003366;
+   border-left: 1px solid #003366;
+   width: 100%;
+}
+
+div.listTable th.yui-dt-sortable{
+	background:#899BE5 url(../images/arrow_off.png) no-repeat right; /* sorted header gradient */ 
+}
+
+div.listTable th.yui-dt-asc{
+	background:#899BE5 url(../images/arrow_up.png) no-repeat right; /* sorted header gradient #A9B8C7 */ 
+}
+
+div.listTable th.yui-dt-desc{
+	background:#899BE5 url(../images/arrow_down.png) no-repeat right; /* sorted header gradient #A9B8C7 */ 
+}
+
+div.listTable .yui-dt-col-orderId {
+   width: 10%;
+}
+
+div.listTable .yui-dt-col-creationDate {
+   width: 10%;
+}
+
+div.listTable .yui-dt-col-status {
+   width: 10%;
+}
+
+div.listTable .yui-dt-col-productTitle {
+   width: 40%;
+}
+
+div.listTable .yui-dt-col-orderDetails {
+   width: 10%;
+}
+
+div.listTable .yui-dt-col-reOrder {
+   width: 10%;
+}
+
+div.listTable .yui-dt-col-userId {
+   width: 10%;
+}
+div.listTable .yui-dt-paginator {
+	margin-left: 6px;
+}
