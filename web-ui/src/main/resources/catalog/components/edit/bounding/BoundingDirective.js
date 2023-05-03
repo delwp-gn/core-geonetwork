@@ -74,6 +74,7 @@
 
             // set read only
             ctrl.readOnly = $scope.$eval($attrs['readOnly']);
+            ctrl.viewerOnly = $scope.$eval($attrs['viewerOnly']) || false;
 
             // init map
             ctrl.map = gnMapsManager.createMap(gnMapsManager.EDITOR_MAP);

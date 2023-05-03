@@ -31,7 +31,7 @@
       </button>
     </div>
   </div>
-  <div class="col-xs-12 col-sm-6 col-sm-pull-6">
+  <div class="col-xs-12 col-sm-6 col-sm-pull-6" data-ng-if="!ctrl.viewerOnly">
     <label class="text-muted control-label" translate>
       selectFormatAndProjection</label>
     <br />
@@ -62,7 +62,7 @@
 </div>
 
 <!-- input geometry field -->
-<div class="row">
+<div class="row" data-ng-if="!ctrl.viewerOnly">
   <div class="col-md-12">
     <div class="has-feedback"
          ng-class="{ 'has-success': ctrl.fromTextInput && !ctrl.parseError, 'has-error': ctrl.parseError }">
