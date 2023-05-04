@@ -24,9 +24,9 @@
                 xmlns:gex="http://standards.iso.org/iso/19115/-3/gex/1.0"
                 xmlns:gfc="http://standards.iso.org/iso/19110/gfc/1.1"
 
-                xmlns:mmi="http://standards.iso.org/iso/19115/-3/mmi/1.0" 
-                xmlns:mac="http://standards.iso.org/iso/19115/-3/mac/2.0" 
-                xmlns:delwp="https://github.com/geonetwork-delwp/iso19115-3.2018" 
+                xmlns:mmi="http://standards.iso.org/iso/19115/-3/mmi/1.0"
+                xmlns:mac="http://standards.iso.org/iso/19115/-3/mac/2.0"
+                xmlns:delwp="https://github.com/geonetwork-delwp/iso19115-3.2018"
 
                 xmlns:java="java:org.fao.geonet.util.XslUtil"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
@@ -73,8 +73,8 @@
   <xsl:include href="../../update-fixed-info-subtemplate.xsl"/>
 
   <!-- The core formatter XSL layout based on the editor configuration -->
-  <xsl:include href="sharedFormatterDir/xslt/render-layout.xsl"/> 
-  
+  <xsl:include href="sharedFormatterDir/xslt/render-layout.xsl"/>
+
   <!-- <xsl:include href="../../../../../data/formatter/xslt/render-layout.xsl"/> -->
 
   <!-- Define the metadata to be loaded for this schema plugin-->
@@ -98,16 +98,16 @@
   </xsl:template>
 
   <xsl:template mode="getMetadataHierarchyLevel" match="mdb:MD_Metadata">
-    
+
   </xsl:template>
 
   <xsl:template mode="getOverviews" match="mdb:MD_Metadata">
-   
+
 
   </xsl:template>
 
   <xsl:template mode="getMetadataHeader" match="mdb:MD_Metadata">
-   
+
   </xsl:template>
 
   <xsl:variable name="warnColour">#f4c842</xsl:variable>
@@ -142,11 +142,11 @@
 
     <!-- custom styling to override external css -->
     <style type="text/css">
-      .listTable tbody { 
-        vertical-align: top !important; 
+      .listTable tbody {
+        vertical-align: top !important;
       }
-      .keyColumn { 
-        white-space:nowrap; 
+      .keyColumn {
+        white-space:nowrap;
         padding-top: 10px;
         padding-bottom: 10px;
        }
@@ -154,10 +154,10 @@
 
     <table id="main">
       <tr>
-        
+
         <td id="content">
           <div class="yui-skin-sam">
-            
+
             <div id="viewMetadataTab" class="yui-navset">
               <ul class="yui-nav">
                 <li class="selected">
@@ -175,11 +175,11 @@
                     <EM>Attributes</EM>
                   </a>
                 </li>
-                
-                
+
+
               </ul>
               <div class="yui-content">
-                
+
                 <!-- TAB 1 -->
                 <div>
                   <table class="listTable">
@@ -233,7 +233,7 @@
                     <tr class="labelCell">
                       <td class="keyColumn">Publication Date:</td>
                       <td>
-                          <xsl:value-of select="format-dateTime(mdb:identificationInfo/mri:MD_DataIdentification/mri:resourceMaintenance/mmi:MD_MaintenanceInformation/mmi:maintenanceDate/cit:CI_Date/cit:date,'[D01] [MNn] [Y0001]')"/>
+                        <xsl:value-of select="format-dateTime(mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:date/cit:CI_Date[cit:dateType/cit:CI_DateTypeCode/@codeListValue = 'publication']/cit:date,'[D01] [MNn] [Y0001]')"/>
                       </td>
                     </tr>
                     <tr class="labelCell">
@@ -520,7 +520,7 @@
                     </tr>
 
                   </table>
-                
+
                 </div>
                 <!-- END TAB 2 -->
 
@@ -564,32 +564,32 @@
                           </tr>
                         </xsl:for-each>
                       </table>
-                      
+
                     </xsl:when>
                     <xsl:otherwise>
                       <pre>No attributes</pre>
                     </xsl:otherwise>
                   </xsl:choose>
-                  
-                  
+
+
                 </div>
                 <!-- END TAB 3 -->
               </div>
-              
+
             </div>
           </div>
-          
-          
+
+
         </td>
       </tr>
     </table>
 
-    <!--  
+    <!--
           Embed JS directly into HTML body
           unparsed-text() reads the file,
           replace() escapes weird line-ending chars,
           (as here: https://www.data2type.de/en/xml-xslt-xslfo/xslt/xslt-xpath-function-reference/alphabetical-xslt-and-xpath-reference/unparsed-text/ ),
-          disable-output-escaping="yes" attribute on xsl:value-of let's us keep the &, < and > characters from the minified JS 
+          disable-output-escaping="yes" attribute on xsl:value-of let's us keep the &, < and > characters from the minified JS
     -->
     <script type="text/javascript">
       <xsl:value-of select="replace( unparsed-text('https://services.land.vic.gov.au/SpatialDatamart/scripts/yahoo/yahoo-dom-event/yahoo-dom-event.js', 'iso-8859-1'), '[&#xD;&#xA;]+', '&#xA;' )" disable-output-escaping="yes"/>
@@ -604,7 +604,7 @@
     <script type="text/javascript">
       //  restores the tabs in browsers which support them
       //  Chrome refuses to run any script so the tabs will not work in that browser
-      function enabletabs() 
+      function enabletabs()
       {
         (function() {
           var tabView = new YAHOO.widget.TabView('viewMetadataTab');
@@ -623,7 +623,7 @@
       window.onload = enabletabs;
 
     </script>
-      
+
   </xsl:template>
 
   <!-- FIELD RENDERING -->
