@@ -592,13 +592,13 @@
           disable-output-escaping="yes" attribute on xsl:value-of let's us keep the &, < and > characters from the minified JS
     -->
     <script type="text/javascript">
-      <xsl:value-of select="replace( unparsed-text('https://services.land.vic.gov.au/SpatialDatamart/scripts/yahoo/yahoo-dom-event/yahoo-dom-event.js', 'iso-8859-1'), '[&#xD;&#xA;]+', '&#xA;' )" disable-output-escaping="yes"/>
+      <xsl:value-of select="replace( unparsed-text(concat(/root/gui/baseUrl, '/images/js/yahoo-dom-event.js'), 'iso-8859-1'), '[&#xD;&#xA;]+', '&#xA;' )" disable-output-escaping="yes"/>
     </script>
     <script type="text/javascript">
-      <xsl:value-of select="replace( unparsed-text('https://services.land.vic.gov.au/SpatialDatamart/scripts/yahoo/element/element-beta-min.js', 'iso-8859-1'), '[&#xD;&#xA;]+', '&#xA;' )" disable-output-escaping="yes"/>
+      <xsl:value-of select="replace( unparsed-text(concat(/root/gui/baseUrl, '/images/js/element-beta-min.js'), 'iso-8859-1'), '[&#xD;&#xA;]+', '&#xA;' )" disable-output-escaping="yes"/>
     </script>
     <script type="text/javascript">
-      <xsl:value-of select="replace( unparsed-text('https://services.land.vic.gov.au/SpatialDatamart/scripts/yahoo/tabview/tabview-min.js', 'iso-8859-1'), '[&#xD;&#xA;]+', '&#xA;' )" disable-output-escaping="yes"/>
+      <xsl:value-of select="replace( unparsed-text(concat(/root/gui/baseUrl, '/images/js/tabview-min.js'), 'iso-8859-1'), '[&#xD;&#xA;]+', '&#xA;' )" disable-output-escaping="yes"/>
     </script>
 
     <script type="text/javascript">
