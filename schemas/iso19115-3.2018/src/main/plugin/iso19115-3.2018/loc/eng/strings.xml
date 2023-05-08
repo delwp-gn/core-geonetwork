@@ -119,7 +119,7 @@
   <resourceAcquisitionInfo>Acquisition Info</resourceAcquisitionInfo>
   <projectAcquisitionInfo>Acquisition Info</projectAcquisitionInfo>
   <constraints>Constraints</constraints>
-  <resourceConstraints>Constraints</resourceConstraints>
+  <resourceConstraints>Resource Constraints</resourceConstraints>
   <metadataConstraints>Metadata Constraints</metadataConstraints>
   <projectContacts>Contacts</projectContacts>
   <resourceSpatial>Spatial</resourceSpatial>
