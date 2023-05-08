@@ -1292,6 +1292,39 @@ public class LuceneSearcher extends MetaSearcher implements MetadataRecordSelect
     }
 
     /**
+     * This method is used to check in MetadataApi for duplicated titles across the catalogue.
+     * It doesn't restrict the search to the users allowed metadata.
+     * Use it with caution to do checks, but not to return the metadata information.
+     *
+     * @param srvContext
+     * @param request
+     * @param config
+     * @throws Exception
+     */
+    public void searchAdmin(ServiceContext srvContext, Element request, ServiceConfig config) throws Exception {
+        // Open the IndexReader first, and then the TaxonomyReader.
+        LOGGER.debug("LuceneSearcher searchAdmin()");
+
+        String sBuildSummary = request.getChildText(Geonet.SearchResult.BUILD_SUMMARY);
+        boolean buildSummary = sBuildSummary == null || sBuildSummary.equals("true");
+        _language = determineLanguage(srvContext, request, _sm.getSettingInfo());
+
+        LOGGER.debug("LuceneSearcher initializing search range");
+        initSearchRange(srvContext);
+
+        LOGGER.debug("LuceneSearcher computing query");
+        computeQuery(srvContext, request, config, true);
+
+        LOGGER.debug("LuceneSearcher performing query");
+        performQuery(srvContext, getFrom() - 1, getTo(), buildSummary);
+        updateSearchRange(request);
+
+        if (_logSearch) {
+            logSearch(srvContext, config, _loggerQuery, _numHits, _sort, _geomWKT, _sm);
+        }
+    }
+
+    /**
      * TODO javadoc.
      */
     public List<org.jdom.Document> presentDocuments(ServiceContext srvContext, Element request, ServiceConfig config) throws Exception {
@@ -1514,6 +1547,10 @@ public class LuceneSearcher extends MetaSearcher implements MetadataRecordSelect
      * TODO javadoc.
      */
     private void computeQuery(ServiceContext srvContext, Element request, ServiceConfig config) throws Exception {
+        computeQuery(srvContext, request, config, false);
+    }
+
+    private void computeQuery(ServiceContext srvContext, Element request, ServiceConfig config, boolean adminSearch) throws Exception {
 
 //		resultType is not specified in search params - it's in config?
         Content child = request.getChild(Geonet.SearchResult.RESULT_TYPE);
@@ -1570,8 +1607,8 @@ public class LuceneSearcher extends MetaSearcher implements MetadataRecordSelect
             }
 
             // if 'restrict to' is set then don't add any other user/group info
-            if ((request.getChild(SearchParameter.GROUP) == null) ||
-                (StringUtils.isEmpty(request.getChild(SearchParameter.GROUP).getText().trim()))) {
+            if (((request.getChild(SearchParameter.GROUP) == null) ||
+                (StringUtils.isEmpty(request.getChild(SearchParameter.GROUP).getText().trim()))) && !adminSearch) {
                 for (Integer group : userGroups) {
                     request.addContent(new Element(SearchParameter.GROUP).addContent("" + group));
                 }

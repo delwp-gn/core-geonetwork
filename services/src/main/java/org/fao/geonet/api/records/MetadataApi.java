@@ -29,11 +29,11 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import jeeves.constants.Jeeves;
+import jeeves.server.ServiceConfig;
 import jeeves.server.context.ServiceContext;
 import jeeves.services.ReadWriteController;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.entity.StringEntity;
 import org.fao.geonet.api.API;
 import org.fao.geonet.api.ApiParams;
 import org.fao.geonet.api.ApiUtils;
@@ -52,6 +52,10 @@ import org.fao.geonet.kernel.GeonetworkDataDirectory;
 import org.fao.geonet.kernel.SchemaManager;
 import org.fao.geonet.kernel.datamanager.IMetadataUtils;
 import org.fao.geonet.kernel.mef.MEFLib;
+import org.fao.geonet.kernel.search.LuceneSearcher;
+import org.fao.geonet.kernel.search.MetaSearcher;
+import org.fao.geonet.kernel.search.SearchManager;
+import org.fao.geonet.kernel.search.SearcherType;
 import org.fao.geonet.lib.Lib;
 import org.fao.geonet.repository.MetadataRepository;
 import org.fao.geonet.utils.Log;
@@ -63,25 +67,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.fao.geonet.api.ApiParams.*;
 import static org.fao.geonet.kernel.mef.MEFLib.Version.Constants.MEF_V1_ACCEPT_TYPE;
@@ -116,6 +112,9 @@ public class MetadataApi {
 
     @Autowired
     GeonetworkDataDirectory dataDirectory;
+
+    @Autowired
+    private SearchManager searchManager;
 
     private ApplicationContext context;
 
@@ -646,6 +645,56 @@ public class MetadataApi {
 
     }
 
+    @ApiOperation(
+        value = "Verifies if a metadata field value is in use. Allowed fields: title, altTitle, identifier.",
+        nickname = "checkMetadataTitleDuplicated")
+    @PostMapping(value = "/{metadataUuid:.+}/checkDuplicatedFieldValue",
+        produces = {
+            MediaType.APPLICATION_JSON_VALUE
+        })
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('Editor')")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Return if the field value is duplicated or not."),
+        @ApiResponse(code = 403, message = ApiParams.API_RESPONSE_NOT_ALLOWED_CAN_VIEW),
+        @ApiResponse(code = 400, message = "Return if the field name is not allowed or if the value is empty.")
+    })
+    @ResponseBody
+    public ResponseEntity<Boolean> checkDuplicatedFieldValue(
+        @ApiParam(value = API_PARAM_RECORD_UUID,
+            required = true)
+        @PathVariable
+        String metadataUuid,
+        @ApiParam(value = "Metadata field information to check",
+            required = true)
+        @RequestBody DuplicatedValueDto duplicatedValueDto,
+        HttpServletRequest request
+    )
+        throws Exception {
+        try {
+            ApiUtils.canViewRecord(metadataUuid, request);
+        } catch (SecurityException e) {
+            Log.debug(API.LOG_MODULE_NAME, e.getMessage(), e);
+            throw new NotAllowedException(ApiParams.API_RESPONSE_NOT_ALLOWED_CAN_VIEW);
+        }
+
+        List<String> validFields = Arrays.asList("_title", "altTitle", "identifier");
+
+        if (!validFields.contains(duplicatedValueDto.getField())) {
+            throw new IllegalArgumentException(String.format("A valid Lucene field name is required:", String.join(",", validFields)));
+        }
+
+        if (StringUtils.isEmpty(duplicatedValueDto.getValue())) {
+            throw new IllegalArgumentException("A non-empty value is required.");
+        }
+
+
+        try (ServiceContext serviceContextToCheckDuplicatedTitles = ApiUtils.createServiceContext(request)) {
+            Set<String> uuidsWithSameTitle = retrieveMetadataUuidsFromFieldValue(serviceContextToCheckDuplicatedTitles,
+                duplicatedValueDto.getField(), duplicatedValueDto.getValue(), metadataUuid);
+            return ResponseEntity.ok(!uuidsWithSameTitle.isEmpty());
+        }
+    }
 
     private boolean isIncludedAttributeTable(RelatedResponse.Fcat fcat) {
         return fcat != null
@@ -654,5 +703,67 @@ public class MetadataApi {
             && fcat.getItem().get(0).getFeatureType() != null
             && fcat.getItem().get(0).getFeatureType().getAttributeTable() != null
             && fcat.getItem().get(0).getFeatureType().getAttributeTable().getElement() != null;
+    }
+
+    /**
+     * Retrieves the list of metadata uuids that have the same value for a Lucene index field.
+     *
+     * @param serviceContext        ServiceContext.
+     * @param fieldName             Lucene field to check.
+     * @param fieldValue            Field value to check.
+     * @param metadataUuidToExclude Metadata identifier to exclude from the search.
+     * @return  A list of metadata uuids that have the same value for a field.
+     */
+    private Set<String> retrieveMetadataUuidsFromFieldValue(ServiceContext serviceContext,
+                                                       String fieldName,
+                                                       String fieldValue,
+                                                       String metadataUuidToExclude) {
+
+        Set<String> uuids = new HashSet<>();
+
+        Element request = new Element(Jeeves.Elem.REQUEST);
+        request.addContent(new Element(fieldName).setText(fieldValue));
+        request.addContent(new Element("fast").setText("true"));
+        // perform the search and return the results read from the index
+
+        try (MetaSearcher searcher = searchManager.newSearcher(SearcherType.LUCENE, Geonet.File.SEARCH_LUCENE)) {
+            ServiceConfig serviceConfig = new ServiceConfig();
+            serviceConfig.setValue(Geonet.SearchConfig.SEARCH_IGNORE_PORTAL_FILTER_OPTION, "true");
+
+            ((LuceneSearcher) searcher).searchAdmin(serviceContext, request, serviceConfig);
+
+            if (searcher.getSize() > 0) {
+                Map<Integer, AbstractMetadata> allMdInfo = ((LuceneSearcher) searcher).getAllMdInfo(serviceContext, searcher.getSize());
+
+                uuids = allMdInfo.values().stream().map(m -> m.getUuid()).collect(Collectors.toSet());
+                uuids.remove(metadataUuidToExclude);
+            }
+
+        } catch (Exception ex) {
+            Log.error(API.LOG_MODULE_NAME, ex.getMessage(), ex);
+        }
+
+        return uuids;
+    }
+
+    private static class DuplicatedValueDto {
+        private String field;
+        private String value;
+
+        public String getField() {
+            return field;
+        }
+
+        public void setField(String field) {
+            this.field = field;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
     }
 }
