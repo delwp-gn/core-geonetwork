@@ -117,7 +117,7 @@
   "scale": "Scale",
   "resolution": "Resolution",
   "credit": "Credit",
-  "classification": "Classification",
+  "classification": "Resource Constraint / Metadata Constraint",
   "resourceStatus": "Status",
   "webserviceLinkonlinesrc": "Open service",
   "AU": "Administrative units",
@@ -532,5 +532,5 @@
   "approve": "Approve",
   "jurisdiction": "Jurisdiction",
   "ownerGroup": "Group that owns metadata",
-  "altTitle": "Resource Name" 
+  "altTitle": "Resource Name"
 }
