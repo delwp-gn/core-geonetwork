@@ -81,6 +81,16 @@
     <for name="delwp:environmentalConditions" use="textarea"/>
     <for name="delwp:tidalConditions" use="textarea"/>
 
+    <!-- DELWP Additions -->
+    <!-- Check if resource name (cit:alternateTitle) is defined in other metadata record -->
+    <for name="cit:alternateTitle"
+         xpath="/mdb:MD_Metadata/mdb:identificationInfo/mri:MD_DataIdentification/mri:citation/cit:CI_Citation/cit:alternateTitle"
+         use="data-gn-duplicated-metadata-value-checker">
+      <directiveAttributes
+        data-field-name="ResourceName"
+        data-field-index-key="altTitle" />
+    </for>
+
     <for name="gco:Distance" use="number"/>
     <for name="gco:Decimal" use="number"/>
     <for name="gco:Integer" use="number"/>
